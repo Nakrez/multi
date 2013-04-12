@@ -11,7 +11,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#define IP "194.168.0.28"
+#define IP "192.168.0.28"
 #define PORT 4242
 
 void error(const char *msg)
@@ -34,18 +34,18 @@ int main(int argc, char *argv[])
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (socket_fd < 0)
-        error("ERROR opening socket");
+        error("ERROR opening socket\n");
 
     server = gethostbyname(IP);
 
     if (server == NULL)
-        error("ERROR, no such host");
+        error("ERROR, no such host\n");
 
     bzero((char *) &serv_addr, sizeof(serv_addr));
 
     serv_addr.sin_family = AF_INET;
 
-    bcopy((char *)server->h_addr, 
+    bcopy((char *)server->h_addr,
          (char *)&serv_addr.sin_addr.s_addr,
          server->h_length);
 
@@ -53,20 +53,22 @@ int main(int argc, char *argv[])
 
     if (connect(socket_fd,
         (struct sockaddr *)&serv_addr,
-        sizeof(serv_addr)) < 0) 
-        error("ERROR connecting");
+        sizeof(serv_addr)) < 0)
+        error("ERROR connecting\n");
+    else
+        printf("client connected\n");
 
     n = write(socket_fd, buffer, strlen(buffer));
 
     if (n < 0) 
-         error("ERROR writing to socket");
+         error("ERROR writing to socket\n");
 
     bzero(buffer,256);
 
     n = read(socket_fd, buffer, 255);
 
     if (n < 0) 
-         error("ERROR reading from socket");
+         error("ERROR reading from socket\n");
 
     printf("%s\n",buffer);
 

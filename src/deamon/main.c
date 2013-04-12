@@ -8,7 +8,7 @@
 
 #include <netinet/in.h>
 
-#define IP "194.168.0.28"
+#define IP "192.168.0.28"
 #define PORT 4242
 
 void error(const char* msg)
