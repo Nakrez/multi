@@ -11,6 +11,8 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
+#include <master/file.h>
+
 #define IP "192.168.0.28"
 #define PORT 4242
 
@@ -29,7 +31,10 @@ int main(int argc, char *argv[])
     int portno = PORT;
     int n;
 
-    char buffer[256] = "Message send";
+    char buffer[1024];
+
+    multi_file *to_transmit = open_file("test.c");
+    FILE *file_buf = NULL;
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -45,9 +50,9 @@ int main(int argc, char *argv[])
 
     serv_addr.sin_family = AF_INET;
 
-    bcopy((char *)server->h_addr,
-         (char *)&serv_addr.sin_addr.s_addr,
-         server->h_length);
+    bcopy((char *)server->h_addr_list[0],
+          (char *)&serv_addr.sin_addr.s_addr,
+          server->h_length);
 
     serv_addr.sin_port = htons(portno);
 
@@ -58,19 +63,16 @@ int main(int argc, char *argv[])
     else
         printf("client connected\n");
 
-    n = write(socket_fd, buffer, strlen(buffer));
+    if ((file_buf = fopen(to_transmit->temp_name, "r")) == NULL)
+    {
+        error("Cant open temp");
+        close(socket_fd);
+    }
 
-    if (n < 0) 
-         error("ERROR writing to socket\n");
-
-    bzero(buffer,256);
-
-    n = read(socket_fd, buffer, 255);
-
-    if (n < 0) 
-         error("ERROR reading from socket\n");
-
-    printf("%s\n",buffer);
+    while (fread(buffer, 1, 1024, file_buf) > 0)
+    {
+        n = write(socket_fd, buffer, strlen(buffer));
+    }
 
     close(socket_fd);
 

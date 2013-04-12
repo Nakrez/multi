@@ -24,8 +24,9 @@ int main(int argc, char *argv[])
 
     int socket_fd;
     int cli_fd;
-    int clilen;
     int n;
+
+    socklen_t clilen;
 
     char buffer[255];
 
