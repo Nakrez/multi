@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     socklen_t clilen;
 
-    char buffer[255];
+    char buffer[1024];
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
     if (cli_fd < 0)
         error("ERROR on accept");
 
-    n = read(cli_fd, buffer, 255);
+
+    while((n = read(cli_fd, buffer, 1024)) > 0)
+        printf("%s", buffer);
 
     if (n < 0)
         error("ERROR reading from socket");

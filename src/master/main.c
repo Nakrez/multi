@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
         n = write(socket_fd, buffer, strlen(buffer));
     }
 
+    fclose(file_buf);
     close(socket_fd);
 
     return 0;
