@@ -33,7 +33,7 @@ static int preprocess(const char *filename, const char *result_name)
         execvp("gcc", argv);
     }
 
-    return WEXITSTATUS(status);
+    return WEXITSTATUS(status) == 0;
 }
 
 static char *uniq_id(const char *initial_name)
@@ -49,7 +49,7 @@ static char *uniq_id(const char *initial_name)
      * strlen -> size initial
      * 1 -> \0
      */
-    id = calloc(0, 5 + 10 + strlen(initial_name) + 1);
+    id = calloc(5 + 12 + strlen(initial_name) + 1, 1);
 
     sprintf(id, "/tmp/%u%s", (unsigned)uniq.tv_sec, initial_name);
 
@@ -106,6 +106,7 @@ multi_file *open_file(const char *file_name)
 
     if (!preprocess(file_name, file_return->temp_name))
     {
+        printf("LOL\n");
         destroy_file(&file_return);
         return NULL;
     }

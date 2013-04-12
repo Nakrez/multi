@@ -36,6 +36,9 @@ int main(int argc, char *argv[])
     multi_file *to_transmit = open_file("test.c");
     FILE *file_buf = NULL;
 
+    if (to_transmit == NULL)
+        error("Transmit file error");
+
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     if (socket_fd < 0)
@@ -69,7 +72,7 @@ int main(int argc, char *argv[])
         close(socket_fd);
     }
 
-    while (fread(buffer, 1, 1024, file_buf) > 0)
+    while (fgets(buffer, 1024, file_buf))
     {
         n = write(socket_fd, buffer, strlen(buffer));
     }

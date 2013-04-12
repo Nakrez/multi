@@ -53,18 +53,8 @@ int main(int argc, char *argv[])
     if (cli_fd < 0)
         error("ERROR on accept");
 
-
     while((n = read(cli_fd, buffer, 1024)) > 0)
         printf("%s", buffer);
-
-    if (n < 0)
-        error("ERROR reading from socket");
-
-    printf("Here is the message: %s\n", buffer);
-    n = write(cli_fd, "OK", 2);
-
-    if (n < 0)
-        error("ERROR writing to socket");
 
     close(socket_fd);
     close(cli_fd);
