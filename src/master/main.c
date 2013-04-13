@@ -7,8 +7,12 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/sendfile.h>
+#include <sys/stat.h>
 
 #include <netinet/in.h>
+
+#include <fcntl.h>
 #include <netdb.h>
 
 #include <master/file.h>
@@ -28,13 +32,14 @@ int main(int argc, char *argv[])
     struct hostent *server;
 
     int socket_fd;
+    int read_bytes = 1;
     int portno = PORT;
-    int n;
 
-    char buffer[1024];
+    FILE* file;
+
+    char buf[1024];
 
     multi_file *to_transmit = open_file("test.c");
-    FILE *file_buf = NULL;
 
     if (to_transmit == NULL)
         error("Transmit file error");
@@ -66,18 +71,19 @@ int main(int argc, char *argv[])
     else
         printf("client connected\n");
 
-    if ((file_buf = fopen(to_transmit->temp_name, "r")) == NULL)
+    if ((file = fopen(to_transmit->temp_name, "r")) == NULL)
     {
         error("Cant open temp");
         close(socket_fd);
     }
 
-    while (fgets(buffer, 1024, file_buf))
+    while (read_bytes)
     {
-        n = write(socket_fd, buffer, strlen(buffer));
+        read_bytes = fread(buf, 1, 1024, file);
+        send(socket_fd, buf, read_bytes, 0);
     }
 
-    fclose(file_buf);
+    fclose(file);
     close(socket_fd);
 
     return 0;
