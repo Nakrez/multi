@@ -36,26 +36,6 @@ static int preprocess(const char *filename, const char *result_name)
     return WEXITSTATUS(status) == 0;
 }
 
-static char *uniq_id(const char *initial_name)
-{
-    char *id;
-
-    struct timeval uniq;
-
-    gettimeofday(&uniq, NULL);
-
-    /* 5 -> /tmp/
-     * 10 -> timestamp
-     * strlen -> size initial
-     * 1 -> \0
-     */
-    id = calloc(5 + 12 + strlen(initial_name) + 1, 1);
-
-    sprintf(id, "/tmp/%u%s", (unsigned)uniq.tv_sec, initial_name);
-
-    return id;
-}
-
 static multi_file *new_file()
 {
     multi_file *file = NULL;
@@ -73,9 +53,6 @@ void destroy_file(multi_file **file)
 {
     if ((*file)->file_name)
         free((*file)->file_name);
-
-    if ((*file)->temp_name)
-        free((*file)->temp_name);
 
     free(*file);
 
@@ -98,7 +75,7 @@ multi_file *open_file(const char *file_name)
 
     strcpy(file_return->file_name, file_name);
 
-    if ((file_return->temp_name = uniq_id(file_name)) == NULL)
+    if ((file_return->temp_name = tmpnam(NULL)) == NULL)
     {
         destroy_file(&file_return);
         return NULL;
@@ -106,7 +83,6 @@ multi_file *open_file(const char *file_name)
 
     if (!preprocess(file_name, file_return->temp_name))
     {
-        printf("LOL\n");
         destroy_file(&file_return);
         return NULL;
     }

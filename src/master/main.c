@@ -16,6 +16,7 @@
 #include <netdb.h>
 
 #include <master/file.h>
+#include <share/socket.h>
 
 #define IP "192.168.0.28"
 #define PORT 4242
@@ -71,19 +72,9 @@ int main(int argc, char *argv[])
     else
         printf("client connected\n");
 
-    if ((file = fopen(to_transmit->temp_name, "r")) == NULL)
-    {
-        error("Cant open temp");
-        close(socket_fd);
-    }
+    send_file(socket_fd, to_transmit->temp_name);
 
-    while (read_bytes)
-    {
-        read_bytes = fread(buf, 1, 1024, file);
-        send(socket_fd, buf, read_bytes, 0);
-    }
-
-    fclose(file);
+    destroy_file(&to_transmit);
     close(socket_fd);
 
     return 0;

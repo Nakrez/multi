@@ -7,11 +7,15 @@ set(CMAKE_C_FLAGS_RELEASE "-Wall -Wextra -std=c99 -I${CMAKE_CURRENT_SOURCE_DIR}/
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG}")
 
 add_executable(multi
+               src/share/socket.c
+
                src/master/file.c
                src/master/main.c
                )
 
 add_executable(multid
+               src/share/socket.c
+
                src/deamon/main.c
                )
 
