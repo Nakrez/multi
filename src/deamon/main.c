@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
     if (cli_fd < 0)
         error("ERROR on accept");
 
-    while((n = recv(cli_fd, buffer, 1024, 0)) != 102443)
-        printf("%s", buffer);
+    while((n = recv(cli_fd, buffer, 1024, 0)) > 0)
+        write(1, buffer, n);
 
     close(socket_fd);
     close(cli_fd);
