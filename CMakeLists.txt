@@ -16,6 +16,7 @@ add_executable(multi
 add_executable(multid
                src/share/socket.c
 
+               src/deamon/file.c
                src/deamon/main.c
                )
 
