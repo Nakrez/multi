@@ -10,6 +10,7 @@ add_executable(multi
                src/share/socket.c
 
                src/master/file.c
+               src/master/usage.c
                src/master/main.c
                )
 

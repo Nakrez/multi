@@ -16,6 +16,8 @@
 #include <netdb.h>
 
 #include <master/file.h>
+#include <master/usage.h>
+
 #include <share/socket.h>
 
 #define IP "88.176.106.132"
@@ -34,6 +36,12 @@ int main(int argc, char *argv[])
 
     int socket_fd;
     int portno = PORT;
+
+    if (argc < 5)
+    {
+        usage();
+        return 0;
+    }
 
     multi_file *to_transmit = open_file("test.c");
 

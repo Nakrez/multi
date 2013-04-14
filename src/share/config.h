@@ -22,4 +22,6 @@ Limit : The number of core online
 */
 # define THREAD_COMPILE_MAX sysconf(_SC_NPROCESSORS_ONLN);
 
+# define MULTI_VERSION "1.0.0"
+
 #endif /* !SHARE_CONFIG_H */
