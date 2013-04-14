@@ -111,7 +111,7 @@ int recv_file(int socket_fd, const char *output_name)
     /* Open the output file */
     if ((file = fopen(output_name, "w")) == NULL)
     {
-        ERROR_MSG("Cannot open file: %s", output_name);
+        ERROR_MSG("Cannot open file: %s\n", output_name);
         return -1;
     }
 
@@ -138,4 +138,54 @@ int recv_file(int socket_fd, const char *output_name)
     fclose(file);
 
     return 0;
+}
+
+int create_server_socket(int port)
+{
+    int socket_fd;
+    /* Use for reuse socket */
+    int yes = 1;
+
+    struct sockaddr_in serv_addr;
+
+    /* Create the socket */
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        ERROR_MSG("Error: Can not create socket\n");
+        return -1;
+    }
+
+    /* Set reusable socket property */
+    if (setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof (int)) < 0)
+    {
+        ERROR_MSG("Error: Can not set REUSEADDR property to socket\n");
+        close(socket_fd);
+        return -1;
+    }
+
+    /* Configure socket details */
+    serv_addr.sin_port = htons(port);
+    serv_addr.sin_addr.s_addr = 0;
+    serv_addr.sin_addr.s_addr = INADDR_ANY;
+    serv_addr.sin_family = AF_INET;
+
+    /* Bind socket */
+    if (bind(socket_fd,
+             (struct sockaddr *)&serv_addr,
+             sizeof(serv_addr)) == -1)
+    {
+        ERROR_MSG("Error: Can not bind socket\n");
+        close(socket_fd);
+        return -1;
+    }
+
+    /* Listen for client */
+    if (listen(socket_fd, SOCKET_QUEUE) == -1)
+    {
+        ERROR_MSG("Error: Socket can not listen\n");
+        close(socket_fd);
+        return -1;
+    }
+
+    return socket_fd;
 }

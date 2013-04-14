@@ -12,9 +12,15 @@
 
 # include <stdio.h>
 
+# include <sys/types.h>
 # include <sys/socket.h>
 
+# include <netinet/in.h>
+
 # include <share/error.h>
+
+// FIXME : put it in a shared configuration header
+# define SOCKET_QUEUE 5
 
 /**
 ** @brief Send a file to a file descriptor (can be socket or file)
@@ -42,4 +48,13 @@ int send_file(int socket_fd, const char *input_name);
 */
 int recv_file(int socket_fd, const char *output_name);
 
+/**
+** @brief Initialise a socket for the @a multi server
+**
+** @param port  The port where you want to bind your socket
+**
+** @return      The socket fd if everything went well
+                -1 else
+*/
+int create_server_socket(int port);
 #endif /* !SOCKET_H */
