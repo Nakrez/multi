@@ -6,25 +6,35 @@ set(CMAKE_C_FLAGS_DEBUG "-Wall -Wextra -std=c99 -pedantic -I${CMAKE_CURRENT_SOUR
 set(CMAKE_C_FLAGS_RELEASE "-Wall -Wextra -std=c99 -I${CMAKE_CURRENT_SOURCE_DIR}/src -O2 -s -DNDEBUG")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG}")
 
-add_executable(multi
-               src/share/socket.c
+add_library(multi_lib SHARED
+            src/share/socket.c)
 
+SET_TARGET_PROPERTIES(
+    multi_lib
+    PROPERTIES
+    VERSION 1.0.0
+    OUTPUT_NAME multi
+)
+
+add_executable(multi
                src/master/file.c
                src/master/usage.c
                src/master/arg.c
                src/master/main.c
                )
 
-add_executable(multid
-               src/share/socket.c
+target_link_libraries(multi multi_lib)
 
+add_executable(multid
                src/deamon/file.c
                src/deamon/main.c
                )
 
+target_link_libraries(multid multi_lib)
+
 #######################
 #######################
-##    CLEAR RULE     ##
+##   DISTCLEAN RULE  ##
 #######################
 #######################
 

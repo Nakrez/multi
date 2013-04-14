@@ -20,7 +20,7 @@ int process_received_file(process_file *file)
     {
         char *argv[] =
         {
-            "x86_64-elf-gcc",
+            "gcc",
             "-fpreprocessed",
             "-c",
             file->input_name,
@@ -29,7 +29,7 @@ int process_received_file(process_file *file)
             NULL
         };
 
-        execvp("x86_64-elf-gcc", argv);
+        execvp("gcc", argv);
     }
 
     return WEXITSTATUS(status) == 0;

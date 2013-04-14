@@ -7,7 +7,8 @@
 
 #include <share/socket.h>
 
-#define IP "88.176.106.132"
+/* #define IP "88.176.106.132" */
+# define IP "127.0.0.1"
 
 int main(int argc, char *argv[])
 {

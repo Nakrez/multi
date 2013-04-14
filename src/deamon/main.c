@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
 
     destroy_file(&file);
 
-    close(socket_fd);
     close(cli_fd);
+    close(socket_fd);
 
     return 0;
 }
