@@ -78,6 +78,7 @@ exit_thread:
     return end_thread(&thread_state);
 }
 
+/* FIXME doc */
 static int check_overload()
 {
     int ret_value = 0;

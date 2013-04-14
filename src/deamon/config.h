@@ -33,18 +33,19 @@ typedef struct
 
     /* The fd of the main socket */
     int socket_fd;
+
     /*
-    Thread pool : one thread per compilation request
-    Max size : number of core of the machine
+    Thread pool:    one thread per compilation request
+    Max size:       number of core of the machine
     */
     thread_state_t *thread_pool;
 } config_t;
 
 /**
-** @brief Allocate and setup as default a new multi server configuration
+** @brief   Allocate and setup as default a new multi server configuration
 **
-** @return A new configuration if everything went well
-           NULL else
+** @return  A new configuration if everything went well
+            NULL else
 */
 config_t *config_new();
 
@@ -56,10 +57,20 @@ config_t *config_new();
 */
 void config_free(config_t **config);
 
-/* FIXME : Add doc */
-void thread_state_free(thread_state_t **state);
-
-/* FIXME : Add doc */
+/**
+** @brief   Allocate a new thread state
+**
+** @return  The allocated thread state if everything went well
+**          NULL else
+*/
 thread_state_t *thread_state_new();
+
+/**
+** @brief   Free a thread state allocated with @a thread_state_new() and set
+            it to NULL
+**
+** @param   state   The thread state you want to free
+*/
+void thread_state_free(thread_state_t **state);
 
 #endif /* !CONFIG_H */
