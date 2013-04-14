@@ -67,6 +67,7 @@ int recv_file(int socket_fd, const char *output_name)
     FILE* file = NULL;
 
     int read_bytes = 0;
+    int bytes_to_read = 0;
 
     char buffer[1024];
 
@@ -76,11 +77,18 @@ int recv_file(int socket_fd, const char *output_name)
         return -1;
     }
 
+    if (read(socket_fd, (char *)&bytes_to_read, sizeof (int)) != 4)
+    {
+        printf("Cannot retrieve file size\n");
+        return -1;
+    }
+
     do
     {
         read_bytes = read(socket_fd, buffer, 1024);
         fwrite(buffer, 1, read_bytes, file);
-    } while (read_bytes);
+        bytes_to_read -= read_bytes;
+    } while (bytes_to_read);
 
     fclose(file);
 
