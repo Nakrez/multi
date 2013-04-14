@@ -78,7 +78,8 @@ int send_file(int socket_fd, const char *input_name)
     file_size = get_file_size(file);
 
     /* Sending file size to server */
-    write_to_fd(socket_fd, (char *)&file_size, sizeof (int));
+    if ((write_to_fd(socket_fd, (char *)&file_size, sizeof (int))) == -1)
+        return -2;
 
     do
     {
@@ -86,10 +87,10 @@ int send_file(int socket_fd, const char *input_name)
         read_bytes = fread(buffer, 1, 1024, file);
 
         /* Send the buffer read to the fd */
-        if (write_to_fd(socket_fd, buffer, read_bytes))
+        if (write_to_fd(socket_fd, buffer, read_bytes) == -1)
         {
             fclose(file);
-            return -2;
+            return -3;
         }
 
     } while (read_bytes);
@@ -119,13 +120,18 @@ int recv_file(int socket_fd, const char *output_name)
     if (read(socket_fd, (char *)&bytes_to_read, sizeof (int)) != 4)
     {
         ERROR_MSG("Cannot retrieve file size\n");
+        fclose(file);
         return -2;
     }
 
     do
     {
         /* Read data from socket */
-        read_bytes = read(socket_fd, buffer, 1024);
+        if ((read_bytes = read(socket_fd, buffer, 1024)) < 0)
+        {
+            fclose(file);
+            return -3;
+        }
 
         /* Write read byte to the file */
         fwrite(buffer, 1, read_bytes, file);

@@ -29,6 +29,7 @@ add_executable(multid
                src/deamon/config.c
                src/deamon/arg.c
                src/deamon/usage.c
+               src/deamon/server.c
                src/deamon/file.c
                src/deamon/main.c
                )

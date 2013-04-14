@@ -2,6 +2,10 @@
 
 enum server_behaviour_e parse_arg(int argc, char *argv[])
 {
+    /*
+    FIXME :  Add differentiation between regular usage and wring command line
+            arguments (for return code)
+    */
     if (argc != 2)
         return SERVER_USAGE;
 

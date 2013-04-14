@@ -9,18 +9,39 @@ config_t *config_new()
 
     config->server_load = 0;
     config->max_load = THREAD_COMPILE_MAX;
-    config->thread_pool = malloc(config->max_load * sizeof (pthread_t));
-
-    if (config->thread_pool == NULL)
-        config_free(&config);
+    config->socket_fd = -1;
 
     return config;
 }
 
 void config_free(config_t **config)
 {
-    free((*config)->thread_pool);
+    if ((*config)->socket_fd > -1)
+        close((*config)->socket_fd);
+
     free(*config);
 
     *config = NULL;
+}
+
+thread_state_t *thread_state_new()
+{
+    thread_state_t *state = NULL;
+
+    if ((state = malloc(sizeof (thread_state_t))) == NULL)
+        return NULL;
+
+    state->cli_fd = -1;
+
+    return state;
+}
+
+void thread_state_free(thread_state_t **state)
+{
+    if ((*state)->cli_fd > -1)
+        close((*state)->cli_fd);
+
+    free(*state);
+
+    *state = NULL;
 }

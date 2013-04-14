@@ -33,20 +33,24 @@ int main(int argc, char *argv[])
 
     printf("Preprocessing file %s\n", config->file->input_file);
 
-    preprocess(config->file);
+    if (!preprocess(config->file))
+        goto exit;
 
     printf("Preprocessing done\n");
 
     printf("Sending file to server for compilation\n");
 
-    send_file(socket_fd, config->file->output_file);
+    if (send_file(socket_fd, config->file->output_file) < 0)
+        goto exit;
 
     printf("File sent waiting for response\n");
 
-    recv_file(socket_fd, config->file->output_file);
+    if (recv_file(socket_fd, config->file->output_file) < 0)
+        goto exit;
 
     printf("File received\n");
 
+exit:
     destroy_config(&config);
     close(socket_fd);
 
