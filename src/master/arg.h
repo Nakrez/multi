@@ -7,6 +7,8 @@
 #ifndef MASTER_ARG_H
 # define MASTER_ARG_H
 
+# include <string.h>
+
 # include <share/error.h>
 
 # include <master/config.h>

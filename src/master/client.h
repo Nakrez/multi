@@ -8,9 +8,11 @@
 #ifndef CLIENT_H
 # define CLIENT_H
 
+# include <master/config.h>
 # include <master/arg.h>
 
 # include <share/socket.h>
+# include <share/compile.h>
 
 /* FIXME doc */
 int launch_client(int argc, char *argv[]);

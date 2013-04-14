@@ -7,12 +7,16 @@
 #ifndef MASTER_CONFIG_H
 # define MASTER_CONFIG_H
 
+# include <unistd.h>
+
 # include <master/file.h>
 
 /* FIXME doc */
 typedef struct
 {
     multi_file_t *file;
+
+    int socket_fd;
 
     char *argv[];
 } config_t;
