@@ -7,7 +7,7 @@
  *
  * @return 0 if everything worked well, -1 else
  */
-int preprocess(multi_file *file)
+int preprocess(multi_file_t *file)
 {
     int status = 0;
 
@@ -36,11 +36,11 @@ int preprocess(multi_file *file)
     return WEXITSTATUS(status) == 0;
 }
 
-multi_file *new_file()
+multi_file_t *multi_file_new()
 {
-    multi_file *file = NULL;
+    multi_file_t *file = NULL;
 
-    if ((file = malloc(sizeof(multi_file))) == NULL)
+    if ((file = malloc(sizeof(multi_file_t))) == NULL)
         return NULL;
 
     file->input_file = NULL;
@@ -49,7 +49,7 @@ multi_file *new_file()
     return file;
 }
 
-void destroy_file(multi_file **file)
+void multi_file_free(multi_file_t **file)
 {
     free((*file)->input_file);
     free((*file)->output_file);

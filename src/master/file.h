@@ -33,7 +33,7 @@ typedef struct s_file
 
     /* It langage */
     e_language language;
-} multi_file;
+} multi_file_t;
 
 // FIXME : DOC PARAMS
 /**
@@ -41,12 +41,12 @@ typedef struct s_file
 **
 ** @return 0 if everything worked well, -1 else
 */
-int preprocess(multi_file *file);
-
-/* FIXME : Add DOC */
-void destroy_file(multi_file **file);
+int preprocess(multi_file_t *file);
 
 // FIXME : Add Doc
-multi_file *new_file();
+multi_file_t *multi_file_new();
+
+/* FIXME : Add DOC */
+void multi_file_free(multi_file_t **file);
 
 #endif /* !MASTER_FILE_H */

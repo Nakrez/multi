@@ -1,14 +1,15 @@
 #include <master/arg.h>
 
-static config_t *new_config()
+/* FIXME doc */
+static config_t *config_new()
 {
     config_t *config = NULL;
 
     if ((config = malloc(sizeof (config_t))) == NULL)
         return NULL;
 
-    if ((config->file = new_file()) == NULL)
-        destroy_config(&config);
+    if ((config->file = multi_file_new()) == NULL)
+        config_free(&config);
 
     return config;
 }
@@ -22,7 +23,7 @@ config_t *process_args(int argc, char *argv[])
 
     config_t *config = NULL;
 
-    if ((config = new_config()) == NULL)
+    if ((config = config_new()) == NULL)
     {
         ERROR_MSG("Internal error: Can not allocate configuration\n");
         return NULL;
@@ -44,9 +45,9 @@ config_t *process_args(int argc, char *argv[])
     return config;
 }
 
-void destroy_config(config_t **config)
+void config_free(config_t **config)
 {
-    destroy_file(&(*config)->file);
+    multi_file_free(&(*config)->file);
 
     free(*config);
     *config = NULL;

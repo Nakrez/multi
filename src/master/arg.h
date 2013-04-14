@@ -11,15 +11,18 @@
 
 # include <master/file.h>
 
+/* FIXME doc */
 typedef struct
 {
-    multi_file *file;
+    multi_file_t *file;
 
     char *argv[];
 } config_t;
 
+/* FIXME doc */
 config_t *process_args(int argc, char *argv[]);
 
-void destroy_config(config_t **config);
+/* FIXME doc */
+void config_free(config_t **config);
 
 #endif /* !MASTER_ARG_H */

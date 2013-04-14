@@ -29,7 +29,11 @@ int main(int argc, char *argv[])
     socket_fd = create_client_socket(IP, MULTI_PORT);
 
     if (socket_fd < 0)
+    {
+        /* FIXME : perform local compilation */
+        ERROR_MSG("Error: Can not create socket\n");
         return 1;
+    }
 
     printf("Preprocessing file %s\n", config->file->input_file);
 
@@ -51,7 +55,7 @@ int main(int argc, char *argv[])
     printf("File received\n");
 
 exit:
-    destroy_config(&config);
+    config_free(&config);
     close(socket_fd);
 
     return 0;
