@@ -58,9 +58,11 @@ static int client_retrieve_data(config_t *config)
 /* FIXME doc */
 static int core_client(config_t *config)
 {
+    /* Preprocess the file and send it to the server */
     if (client_preprocess(config))
         return 1;
 
+    /* Retrieve object file from server */
     if (client_retrieve_data(config))
         return 1;
 

@@ -26,10 +26,20 @@ typedef struct s_file
     e_language language;
 } multi_file_t;
 
-// FIXME : Add Doc
+/**
+** @brief Allocate a new client file
+**
+** @return  The allocated file if everything went well
+            NULL else
+*/
 multi_file_t *multi_file_new();
 
-/* FIXME : Add DOC */
+/**
+** @brief   Free a client file and set it to NULL allocate with
+            @a multi_file_new()
+**
+** @param   file    The file you want to free
+*/
 void multi_file_free(multi_file_t **file);
 
 #endif /* !MASTER_FILE_H */
