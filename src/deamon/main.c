@@ -7,7 +7,7 @@
 #include <share/config.h>
 
 #include <deamon/file.h>
-
+#include <deamon/usage.h>
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +15,12 @@ int main(int argc, char *argv[])
 
     int socket_fd;
     int cli_fd;
+
+    if (argc < 2)
+    {
+        usage();
+        return 0;
+    }
 
     socklen_t clilen;
 
