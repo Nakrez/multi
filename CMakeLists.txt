@@ -26,11 +26,13 @@ add_executable(multi
 target_link_libraries(multi multi_lib)
 
 add_executable(multid
+               src/deamon/config.c
                src/deamon/file.c
                src/deamon/main.c
                )
 
 target_link_libraries(multid multi_lib)
+target_link_libraries(multid pthread)
 
 #######################
 #######################
