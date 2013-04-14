@@ -19,7 +19,7 @@
 #include <share/socket.h>
 
 #define IP "192.168.0.28"
-#define PORT 4242
+#define PORT 8216
 
 void error(const char *msg)
 {
@@ -33,12 +33,7 @@ int main(int argc, char *argv[])
     struct hostent *server;
 
     int socket_fd;
-    int read_bytes = 1;
     int portno = PORT;
-
-    FILE* file;
-
-    char buf[1024];
 
     multi_file *to_transmit = open_file("test.c");
 
