@@ -18,9 +18,7 @@
 # include <netinet/in.h>
 
 # include <share/error.h>
-
-// FIXME : put it in a shared configuration header
-# define SOCKET_QUEUE 5
+# include <share/config.h>
 
 /**
 ** @brief Send a file to a file descriptor (can be socket or file)

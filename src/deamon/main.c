@@ -3,12 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include <share/socket.h>
+#include <share/config.h>
 
 #include <deamon/file.h>
 
-#define PORT 8216
 
 int main(int argc, char *argv[])
 {
@@ -21,11 +20,9 @@ int main(int argc, char *argv[])
 
     process_file *file = NULL;
 
-    file = allocate();
+    socket_fd = create_server_socket(MULTI_PORT);
 
-    socket_fd = create_server_socket(PORT);
-
-    /* FIXME : Not proper exit */
+    /* If server can not initialise socket exit it */
     if (socket_fd < 0)
         return 1;
 
@@ -34,6 +31,8 @@ int main(int argc, char *argv[])
 
     if (cli_fd < 0)
         ERROR_MSG("ERROR on accept\n");
+
+    file = allocate();
 
     recv_file(cli_fd, file->input_name);
 
