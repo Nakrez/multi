@@ -21,9 +21,31 @@ int send_file(int socket_fd, const char *input_name)
     }
 
     fclose(file);
+
+    return 0;
 }
 
 int recv_file(int socket_fd, const char *output_name)
 {
+    FILE* file = NULL;
 
+    int read_bytes = 1;
+
+    char buffer[1024];
+
+    if ((file = fopen(output_name, "w")) == NULL)
+    {
+        printf("Cannot open file: %s", output_name);
+        return -1;
+    }
+
+    while (read_bytes)
+    {
+        read_bytes = recv(socket_fd, buffer, 1024, 0);
+        fwrite(buffer, 1, read_bytes, file);
+    }
+
+    fclose(file);
+
+    return 0;
 }
