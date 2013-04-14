@@ -15,6 +15,7 @@
 # include <sys/wait.h>
 # include <sys/types.h>
 
+# include <share/error.h>
 /**
 ** @brief Run preprocess if needed
 ** @param input_file    The file you want to preprocess
@@ -25,5 +26,8 @@
 **         -1 if an error occured before compiler instanciation
 */
 int preprocess(char *input_file, char *output_file);
+
+/* FIXME add doc */
+void full_compilation(char *input_file, char *output_file);
 
 #endif /* !COMPILE_H */

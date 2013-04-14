@@ -14,7 +14,9 @@ int launch_client(int argc, char *argv[])
     if ((config->socket_fd = create_client_socket(IP, MULTI_PORT)) < 0)
     {
         ERROR_MSG("Error: Can not create socket\n");
-        /* FIXME : perform local compilation */
+
+        full_compilation(config->file->input_file, config->file->output_file);
+
         /* Return will be ignored since compiler will remplace multi */
         return 1;
     }
@@ -29,12 +31,26 @@ int launch_client(int argc, char *argv[])
     printf("Sending file to server for compilation\n");
 
     if (send_file(config->socket_fd, config->file->output_file) < 0)
-        goto exit;
+    {
+        ERROR_MSG("Error: Can not send file to the server\n");
+        close(config->socket_fd);
+
+        full_compilation(config->file->input_file, config->file->output_file);
+
+        /* Never reached */
+    }
 
     printf("File sent waiting for response\n");
 
     if (recv_file(config->socket_fd, config->file->output_file) < 0)
-        goto exit;
+    {
+        ERROR_MSG("Error: Can not receive compiled file from the server\n");
+        close(config->socket_fd);
+
+        full_compilation(config->file->input_file, config->file->output_file);
+
+        /* Never reached */
+    }
 
     printf("File received\n");
 

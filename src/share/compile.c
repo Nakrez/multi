@@ -1,5 +1,6 @@
 #include <share/compile.h>
 
+/* FIXME add doc */
 int preprocess(char *input_file, char *output_file)
 {
     int status = 0;
@@ -27,4 +28,21 @@ int preprocess(char *input_file, char *output_file)
     }
 
     return WEXITSTATUS(status);
+}
+
+void full_compilation(char *input_file, char *output_file)
+{
+    ERROR_MSG("Invoking gcc -c %s -o %s\n", input_file, output_file);
+
+    char *argv[] =
+    {
+        "gcc",
+        "-c",
+        input_file,
+        "-o",
+        output_file,
+        NULL
+    };
+
+    execvp("gcc", argv);
 }
