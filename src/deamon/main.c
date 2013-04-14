@@ -8,6 +8,10 @@
 
 #include <netinet/in.h>
 
+#include <share/socket.h>
+
+#include <deamon/file.h>
+
 #define IP "192.168.0.28"
 #define PORT 4242
 
@@ -24,11 +28,12 @@ int main(int argc, char *argv[])
 
     int socket_fd;
     int cli_fd;
-    int n;
 
     socklen_t clilen;
 
-    char buffer[1024];
+    process_file *file = NULL;
+
+    file = allocate();
 
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -53,8 +58,11 @@ int main(int argc, char *argv[])
     if (cli_fd < 0)
         error("ERROR on accept");
 
-    while((n = recv(cli_fd, buffer, 1024, 0)) > 0)
-        write(1, buffer, n);
+    recv_file(cli_fd, file->input_name);
+
+    process_received_file(file);
+
+    destroy_file(&file);
 
     close(socket_fd);
     close(cli_fd);
