@@ -19,7 +19,9 @@ SET_TARGET_PROPERTIES(
 add_executable(multi
                src/master/file.c
                src/master/usage.c
+               src/master/config.c
                src/master/arg.c
+               src/master/client.c
                src/master/main.c
                )
 

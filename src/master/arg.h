@@ -9,20 +9,9 @@
 
 # include <share/error.h>
 
-# include <master/file.h>
-
-/* FIXME doc */
-typedef struct
-{
-    multi_file_t *file;
-
-    char *argv[];
-} config_t;
+# include <master/config.h>
 
 /* FIXME doc */
 config_t *process_args(int argc, char *argv[]);
-
-/* FIXME doc */
-void config_free(config_t **config);
 
 #endif /* !MASTER_ARG_H */
