@@ -11,6 +11,7 @@ add_executable(multi
 
                src/master/file.c
                src/master/usage.c
+               src/master/arg.c
                src/master/main.c
                )
 

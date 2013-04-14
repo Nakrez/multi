@@ -189,3 +189,47 @@ int create_server_socket(int port)
 
     return socket_fd;
 }
+
+int create_client_socket(const char *addr, int port)
+{
+    int socket_fd;
+
+    struct sockaddr_in serv_addr;
+    struct hostent *server;
+
+    /* Get information on host */
+    if ((server = gethostbyname(addr)) == NULL)
+    {
+        ERROR_MSG("ERROR: host %s can not be reached\n", addr);
+        return -1;
+    }
+
+    /* Create socket */
+    if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    {
+        ERROR_MSG("Error: Can not create socket\n");
+        return -1;
+    }
+
+    bzero((char *)&serv_addr, sizeof(serv_addr));
+
+    serv_addr.sin_family = AF_INET;
+
+    bcopy((char *)server->h_addr_list[0],
+          (char *)&serv_addr.sin_addr.s_addr,
+          server->h_length);
+
+    serv_addr.sin_port = htons(port);
+
+    /* Connect to the server */
+    if (connect(socket_fd,
+        (struct sockaddr *)&serv_addr,
+        sizeof (serv_addr)) < 0)
+    {
+        ERROR_MSG("Error: Can not connect to the host: %s\n", addr);
+        close(socket_fd);
+        return -1;
+    }
+
+    return socket_fd;
+}

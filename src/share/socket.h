@@ -11,6 +11,8 @@
 # include <unistd.h>
 
 # include <stdio.h>
+# include <netdb.h>
+# include <strings.h>
 
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -55,4 +57,9 @@ int recv_file(int socket_fd, const char *output_name);
                 -1 else
 */
 int create_server_socket(int port);
+
+/**
+*/
+int create_client_socket(const char *addr, int port);
+
 #endif /* !SOCKET_H */
