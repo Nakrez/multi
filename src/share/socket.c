@@ -17,7 +17,7 @@ int send_file(int socket_fd, const char *input_name)
     do
     {
         read_bytes = fread(buffer, 1, 1024, file);
-        send(socket_fd, buffer, read_bytes, 0);
+        write(socket_fd, buffer, read_bytes);
     } while (read_bytes);
 
     fclose(file);
@@ -41,7 +41,7 @@ int recv_file(int socket_fd, const char *output_name)
 
     do
     {
-        read_bytes = recv(socket_fd, buffer, 1024, 0);
+        read_bytes = read(socket_fd, buffer, 1024);
         fwrite(buffer, 1, read_bytes, file);
     } while (read_bytes);
 
