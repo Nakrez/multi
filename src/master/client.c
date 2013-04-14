@@ -23,7 +23,7 @@ int launch_client(int argc, char *argv[])
 
     printf("Preprocessing file %s\n", config->file->input_file);
 
-    if (!preprocess(config->file->input_file, config->file->output_file))
+    if (preprocess(config->file->input_file, config->file->output_file))
         goto exit;
 
     printf("Preprocessing done\n");
