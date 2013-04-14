@@ -4,8 +4,8 @@
  * @authors Baptiste COVOLATO <b.covolato@gmail.com>
  */
 
-#ifndef FILE_H
-# define FILE_H
+#ifndef MASTER_FILE_H
+# define MASTER_FILE_H
 
 # include <unistd.h>
 
@@ -23,19 +23,30 @@
 typedef struct s_file
 {
     /* The name of the file */
-    char *file_name;
+    char *input_file;
 
     /**
      * @brief  Temp name associated to this file (for preprocess and reception
                of the object file)
      */
-    char *temp_name;
+    char *output_file;
 
     /* It langage */
     e_language language;
 } multi_file;
 
-void destroy_file(multi_file **file);
-multi_file *open_file(const char *file_name);
+// FIXME : DOC PARAMS
+/**
+** @brief Run preprocess if needed
+**
+** @return 0 if everything worked well, -1 else
+*/
+int preprocess(multi_file *file);
 
-#endif /* !FILE_H */
+/* FIXME : Add DOC */
+void destroy_file(multi_file **file);
+
+// FIXME : Add Doc
+multi_file *new_file();
+
+#endif /* !MASTER_FILE_H */

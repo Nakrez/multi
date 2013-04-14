@@ -7,7 +7,7 @@
  *
  * @return 0 if everything worked well, -1 else
  */
-static int preprocess(const char *filename, const char *result_name)
+int preprocess(multi_file *file)
 {
     int status = 0;
 
@@ -20,13 +20,13 @@ static int preprocess(const char *filename, const char *result_name)
         waitpid(pid, &status, 0);
     else
     {
-        const char *const argv[] =
+        char *argv[] =
         {
             "gcc",
             "-E",
-            filename,
+            file->input_file,
             "-o",
-            result_name,
+            file->output_file,
             NULL
         };
 
@@ -36,56 +36,25 @@ static int preprocess(const char *filename, const char *result_name)
     return WEXITSTATUS(status) == 0;
 }
 
-static multi_file *new_file()
+multi_file *new_file()
 {
     multi_file *file = NULL;
 
     if ((file = malloc(sizeof(multi_file))) == NULL)
         return NULL;
 
-    file->file_name = NULL;
-    file->temp_name = NULL;
+    file->input_file = NULL;
+    file->output_file = NULL;
 
     return file;
 }
 
 void destroy_file(multi_file **file)
 {
-    if ((*file)->file_name)
-        free((*file)->file_name);
+    free((*file)->input_file);
+    free((*file)->output_file);
 
     free(*file);
 
     *file = NULL;
-}
-
-multi_file *open_file(const char *file_name)
-{
-    multi_file *file_return = NULL;
-
-    /* Fail malloc */
-    if ((file_return = new_file()) == NULL)
-        return NULL;
-
-    if ((file_return->file_name = malloc(strlen(file_name) + 1)) == NULL)
-    {
-        destroy_file(&file_return);
-        return NULL;
-    }
-
-    strcpy(file_return->file_name, file_name);
-
-    if ((file_return->temp_name = tmpnam(NULL)) == NULL)
-    {
-        destroy_file(&file_return);
-        return NULL;
-    }
-
-    if (!preprocess(file_name, file_return->temp_name))
-    {
-        destroy_file(&file_return);
-        return NULL;
-    }
-
-    return file_return;
 }
