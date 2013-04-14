@@ -18,7 +18,7 @@
 #include <master/file.h>
 #include <share/socket.h>
 
-#define IP "192.168.0.28"
+#define IP "88.176.106.132"
 #define PORT 8216
 
 void error(const char *msg)
@@ -68,6 +68,10 @@ int main(int argc, char *argv[])
         printf("client connected\n");
 
     send_file(socket_fd, to_transmit->temp_name);
+
+    printf("File sent waiting for response\n");
+
+    recv_file(socket_fd, to_transmit->temp_name);
 
     destroy_file(&to_transmit);
     close(socket_fd);
