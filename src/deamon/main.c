@@ -8,6 +8,7 @@
 
 #include <deamon/file.h>
 #include <deamon/usage.h>
+#include <deamon/arg.h>
 
 int main(int argc, char *argv[])
 {
@@ -16,12 +17,24 @@ int main(int argc, char *argv[])
     int socket_fd;
     int cli_fd;
 
-    if (argc < 2)
+    switch (parse_arg(argc, argv))
     {
-        usage();
-        return 0;
+        case SERVER_USAGE:
+            usage();
+            return 0;
+        case SERVER_START:
+            printf("Option not handled yet\n");
+            break;
+        case SERVER_RESTART:
+            printf("Option not handled yet\n");
+            break;
+        case SERVER_STOP:
+            printf("Option not handled yet\n");
+            break;
+        case SERVER_PID:
+            printf("Option not handled yet\n");
+            break;
     }
-
     socklen_t clilen;
 
     process_file *file = NULL;
