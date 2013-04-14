@@ -30,11 +30,21 @@ int main(int argc, char *argv[])
     if (socket_fd < 0)
         return 1;
 
-    send_file(socket_fd, config->file->input_file);
+    printf("Preprocessing file %s\n", config->file->input_file);
+
+    preprocess(config->file);
+
+    printf("Preprocessing done\n");
+
+    printf("Sending file to server for compilation\n");
+
+    send_file(socket_fd, config->file->output_file);
 
     printf("File sent waiting for response\n");
 
     recv_file(socket_fd, config->file->output_file);
+
+    printf("File received\n");
 
     destroy_config(&config);
     close(socket_fd);
