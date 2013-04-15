@@ -49,12 +49,12 @@ static void *compile_file(void *state)
 {
     thread_state_t *thread_state = (thread_state_t *)state;
 
-    process_file *file = NULL;
+    process_file_t *file = NULL;
 
     if (set_timeout(thread_state->cli_fd) < 0)
         goto exit_thread;
 
-    file = allocate();
+    file = process_file_new();
 
     if (recv_file(thread_state->cli_fd, file->input_name) < 0)
         goto exit_thread;
@@ -73,7 +73,7 @@ static void *compile_file(void *state)
 
 exit_thread:
     if (file)
-        destroy_file(&file);
+        process_file_free(&file);
 
     return end_thread(&thread_state);
 }

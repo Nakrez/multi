@@ -1,6 +1,6 @@
 #include <deamon/file.h>
 
-int process_received_file(process_file *file)
+int process_received_file(process_file_t *file)
 {
     int status;
 
@@ -35,7 +35,7 @@ int process_received_file(process_file *file)
     return WEXITSTATUS(status) == 0;
 }
 
-void destroy_file(process_file **file)
+void process_file_free(process_file_t **file)
 {
     if (!*file)
         return;
@@ -47,18 +47,18 @@ void destroy_file(process_file **file)
     *file = NULL;
 }
 
-process_file *allocate()
+process_file_t *process_file_new()
 {
     char *tmp = NULL;
 
-    process_file *file = NULL;
+    process_file_t *file = NULL;
 
-    if ((file = malloc(sizeof (process_file))) == NULL)
+    if ((file = malloc(sizeof (process_file_t))) == NULL)
         return NULL;
 
     if ((file->input_name = tmpnam(NULL)) == NULL)
     {
-        destroy_file(&file);
+        process_file_free(&file);
         return NULL;
     }
 
@@ -70,7 +70,7 @@ process_file *allocate()
 
     if ((file->output_name = tmpnam(NULL)) == NULL)
     {
-        destroy_file(&file);
+        process_file_free(&file);
         return NULL;
     }
 

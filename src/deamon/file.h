@@ -23,10 +23,10 @@ typedef struct
     char *output_name;
 
     e_language langage;
-} process_file;
+} process_file_t;
 
-int process_received_file(process_file *file);
-void destroy_file(process_file **file);
-process_file *allocate();
+int process_received_file(process_file_t *file);
+void process_file_free(process_file_t **file);
+process_file_t *process_file_new();
 
 #endif /* !FILE_H */
