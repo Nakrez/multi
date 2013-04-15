@@ -46,3 +46,39 @@ void full_compilation(char *input_file, char *output_file)
 
     execvp("gcc", argv);
 }
+
+int compile_without_preprocess(char *input_file, char *output_file)
+{
+    int status;
+
+    pid_t pid;
+
+    pid = fork();
+
+    if (pid < 0)
+    {
+        printf("Fork error");
+        return -1;
+    }
+
+    if (pid)
+        waitpid(pid, &status, 0);
+    else
+    {
+        char *argv[] =
+        {
+            "gcc",
+            "-fpreprocessed",
+            "-c",
+            input_file,
+            "-o",
+            output_file,
+            NULL
+        };
+
+        execvp("gcc", argv);
+    }
+
+    return WEXITSTATUS(status) == 0;
+}
+

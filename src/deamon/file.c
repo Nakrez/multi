@@ -1,40 +1,5 @@
 #include <deamon/file.h>
 
-int process_received_file(process_file_t *file)
-{
-    int status;
-
-    pid_t pid;
-
-    pid = fork();
-
-    if (pid < 0)
-    {
-        printf("Fork error");
-        return -1;
-    }
-
-    if (pid)
-        waitpid(pid, &status, 0);
-    else
-    {
-        char *argv[] =
-        {
-            "gcc",
-            "-fpreprocessed",
-            "-c",
-            file->input_name,
-            "-o",
-            file->output_name,
-            NULL
-        };
-
-        execvp("gcc", argv);
-    }
-
-    return WEXITSTATUS(status) == 0;
-}
-
 void process_file_free(process_file_t **file)
 {
     if (!*file)

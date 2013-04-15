@@ -25,8 +25,10 @@ typedef struct
     e_language langage;
 } process_file_t;
 
-int process_received_file(process_file_t *file);
+/* FIXME doc */
 void process_file_free(process_file_t **file);
+
+/* FIXME doc */
 process_file_t *process_file_new();
 
 #endif /* !FILE_H */

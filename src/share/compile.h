@@ -30,4 +30,7 @@ int preprocess(char *input_file, char *output_file);
 /* FIXME add doc */
 void full_compilation(char *input_file, char *output_file);
 
+/* FIXME doc */
+int compile_without_preprocess(char *input_file, char *output_file);
+
 #endif /* !COMPILE_H */

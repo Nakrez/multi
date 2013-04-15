@@ -10,6 +10,7 @@
 
 # include <sys/time.h>
 
+# include <share/compile.h>
 # include <share/socket.h>
 # include <share/error.h>
 
