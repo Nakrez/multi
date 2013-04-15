@@ -1,13 +1,12 @@
 #include <share/compile.h>
 
-/* FIXME add doc */
 int preprocess(char *input_file, char *output_file)
 {
     int status = 0;
 
-    pid_t pid = fork();
+    pid_t pid;
 
-    if (pid < 0)
+    if ((pid = fork()) < 0)
         return -1;
 
     if (pid)
@@ -47,24 +46,94 @@ void full_compilation(char *input_file, char *output_file)
     execvp("gcc", argv);
 }
 
+static int close_pipe(int pipe_fd[2])
+{
+    close(pipe_fd[0]);
+    close(pipe_fd[1]);
+
+    return -1;
+}
+
+static unsigned my_strlen(char *str)
+{
+    if (str)
+        return strlen(str);
+    else
+        return 0;
+}
+
+static char *read_fd(int fd)
+{
+    int read_byte = 0;
+    int pos = 0;
+
+    char temp_buf[PIPE_BUF];
+    char *buf = NULL;
+
+    while ((read_byte = read(fd, temp_buf, PIPE_BUF)) > 0)
+    {
+        buf = realloc(buf, my_strlen(buf) + 2 + read_byte);
+        strncpy(buf + pos, temp_buf, read_byte);
+        pos += read_byte;
+    }
+
+    if (read_byte < 0)
+    {
+        free(buf);
+        return NULL;
+    }
+
+    if (buf == NULL)
+        return NULL;
+
+    buf[pos] = 0;
+
+    return buf;
+}
+
 int compile_without_preprocess(char *input_file, char *output_file)
 {
+    /* TODO : build compile_result_t and return it */
     int status;
+    int std_out[2];
+    int std_err[2];
 
     pid_t pid;
 
-    pid = fork();
+    if (pipe(std_out))
+        return -1;
 
-    if (pid < 0)
+    if (pipe(std_err))
+        return close_pipe(std_out);
+
+    if ((pid = fork()) < 0)
     {
         printf("Fork error");
-        return -1;
+        close_pipe(std_err);
+        return close_pipe(std_out);
     }
 
-    if (pid)
-        waitpid(pid, &status, 0);
-    else
+    if (pid) /* Father */
     {
+        close(std_out[1]);
+        close(std_err[1]);
+
+        waitpid(pid, &status, 0);
+
+        /* printf("STDOUT : %s\n", read_fd(std_out[0])); */
+        /* printf("STDERR : %s\n", read_fd(std_err[0])); */
+
+        close(std_out[0]);
+        close(std_err[0]);
+    }
+    else /* Child */
+    {
+        close(std_out[0]);
+        close(std_err[0]);
+
+        dup2(std_out[1], STDOUT_FILENO);
+        dup2(std_err[1], STDERR_FILENO);
+
         char *argv[] =
         {
             "gcc",
@@ -79,6 +148,28 @@ int compile_without_preprocess(char *input_file, char *output_file)
         execvp("gcc", argv);
     }
 
-    return WEXITSTATUS(status) == 0;
+    return WEXITSTATUS(status);
 }
 
+compile_result_t *compile_result_new()
+{
+    compile_result_t *res = NULL;
+
+    if ((res = malloc(sizeof (compile_result_t))) == NULL)
+        return NULL;
+
+    res->std_out = NULL;
+    res->std_err = NULL;
+    res->status = -1;
+
+    return res;
+}
+
+void compile_result_free(compile_result_t **res)
+{
+    free((*res)->std_out);
+    free((*res)->std_err);
+    free(*res);
+
+    *res = NULL;
+}
