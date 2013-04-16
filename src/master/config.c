@@ -10,6 +10,7 @@ config_t *config_new()
     if ((config->file = multi_file_new()) == NULL)
         config_free(&config);
 
+    config->result = NULL;
     config->socket_fd = -1;
 
     return config;
@@ -18,6 +19,8 @@ config_t *config_new()
 void config_free(config_t **config)
 {
     multi_file_free(&(*config)->file);
+
+    compile_result_free(&(*config)->result);
 
     if ((*config)->socket_fd > -1)
         close((*config)->socket_fd);

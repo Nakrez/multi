@@ -9,12 +9,16 @@
 
 # include <unistd.h>
 
+# include <share/compile.h>
+
 # include <master/file.h>
 
 /* FIXME doc */
 typedef struct
 {
     multi_file_t *file;
+
+    compile_result_t *result;
 
     int socket_fd;
 
