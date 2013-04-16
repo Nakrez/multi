@@ -36,8 +36,13 @@ static int client_preprocess(config_t *config)
 /* FIXME doc */
 static int client_retrieve_data(config_t *config)
 {
-    /* FIXME handle error and desalocation */
-    config->result = recv_compile_result(config->socket_fd);
+    if ((config->result = recv_compile_result(config->socket_fd)) == NULL)
+    {
+        ERROR_MSG("Error: Can not receive compiler state from the server\n");
+        close(config->socket_fd);
+
+        full_compilation(config->file->input_file, config->file->output_file);
+    }
 
     if (recv_file(config->socket_fd, config->file->output_file) < 0)
     {
