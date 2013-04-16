@@ -67,6 +67,9 @@ static void *compile_file(void *state)
     if (!file->result)
         goto exit_thread;
 
+    /* FIXME handle error */
+    send_compile_result(thread_state->cli_fd, file->result);
+
     printf("File processed. Sending response...\n");
 
     if (send_file(thread_state->cli_fd, file->output_name) < 0)

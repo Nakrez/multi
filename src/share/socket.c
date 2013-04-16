@@ -216,6 +216,9 @@ int send_compile_result(int fd, compile_result_t *result)
     const int stdout_size = neg_strlen(result->std_out) + 1;
     const int stderr_size = neg_strlen(result->std_err) + 1;
 
+    if ((write_to_fd(fd, (char *)&result->status, sizeof (int))) == -1)
+        return -1;
+
     if ((write_to_fd(fd, (char *)&stdout_size, sizeof (int))) == -1)
         return -1;
 
@@ -242,10 +245,13 @@ compile_result_t *recv_compile_result(int fd)
     if ((result = compile_result_new()) == NULL)
         return NULL;
 
+    /* Read the return status of compiler*/
+    TREAT_ERROR(read(fd, (char *)&result->status, sizeof (int)) != sizeof (int));
+
     /* Read the size of std_out */
     TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
 
-    TREAT_ERROR((result->std_out = malloc(bytes_to_read)) == NULL);
+    TREAT_ERROR((result->std_out = calloc(1, bytes_to_read)) == NULL);
 
     /* Read std_out */
     while ((n = read(fd, result->std_out + pos, PIPE_BUF)) <= 0)
@@ -260,7 +266,7 @@ compile_result_t *recv_compile_result(int fd)
     /* Read size of std_err */
     TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
 
-    TREAT_ERROR((result->std_err = malloc(bytes_to_read)) == NULL);
+    TREAT_ERROR((result->std_err = calloc(1, bytes_to_read)) == NULL);
 
     /* Read std_err */
     while ((n = read(fd, result->std_err + pos, PIPE_BUF)) <= 0)

@@ -36,9 +36,17 @@ static int client_preprocess(config_t *config)
 /* FIXME doc */
 static int client_retrieve_data(config_t *config)
 {
-    /* TODO get compiler return from server */
-    /* TODO retrieve compiler stdout */
-    /* TODO retrieve compiler stderr */
+    compile_result_t *result = NULL;
+
+    /* FIXME handle error and desalocation */
+    result = recv_compile_result(config->socket_fd);
+
+    if (result == NULL)
+        printf("Error compile state\n");
+
+    printf("Compiler status : %d\n", result->status);
+    printf("Result stdout : %s\n", result->std_out);
+    printf("Result stderr : %s\n", result->std_err);
 
     if (recv_file(config->socket_fd, config->file->output_file) < 0)
     {
