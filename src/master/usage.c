@@ -9,5 +9,5 @@ void usage()
 
     // FIXME : Add licence
 
-    printf("Usage: multi [COMPILER_OPTIONS] -c INPUT_FILE -o OUTPUT_FILE\n");
+    printf("Usage: multi [COMPILER_OPTIONS] -o OUTPUT_FILE -c INPUT_FILE\n");
 }

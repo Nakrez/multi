@@ -22,8 +22,8 @@ config_t *process_args(int argc, char *argv[])
     }
 
     // FIXME : Handle errors
-    config->file->input_file = malloc(strlen(argv[input_place]) + 1);
     config->file->output_file = malloc(strlen(argv[output_place]) + 1);
+    config->file->input_file = malloc(strlen(argv[input_place]) + 1);
 
     strcpy(config->file->input_file, argv[input_place]);
     strcpy(config->file->output_file, argv[output_place]);
