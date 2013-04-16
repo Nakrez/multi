@@ -45,8 +45,11 @@ static int client_retrieve_data(config_t *config)
         printf("Error compile state\n");
 
     printf("Compiler status : %d\n", result->status);
-    printf("Result stdout : %s\n", result->std_out);
-    printf("Result stderr : %s\n", result->std_err);
+
+    if (result->std_out)
+        printf("Result stdout : %s\n", result->std_out);
+    if (result->std_err)
+        printf("Result stderr : %s\n", result->std_err);
 
     if (recv_file(config->socket_fd, config->file->output_file) < 0)
     {

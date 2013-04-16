@@ -67,6 +67,8 @@ static void *compile_file(void *state)
     if (!file->result)
         goto exit_thread;
 
+    printf("Status %d\n", file->result->status);
+
     /* FIXME handle error */
     send_compile_result(thread_state->cli_fd, file->result);
 

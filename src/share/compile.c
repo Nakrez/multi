@@ -116,6 +116,7 @@ compile_result_t *compile_without_preprocess(char *input_file, char *output_file
     }
 
     result->status = WEXITSTATUS(status);
+    printf("GET %d\n", status);
 
     return result;
 }

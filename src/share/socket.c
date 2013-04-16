@@ -222,14 +222,20 @@ int send_compile_result(int fd, compile_result_t *result)
     if ((write_to_fd(fd, (char *)&stdout_size, sizeof (int))) == -1)
         return -1;
 
-    if ((write_to_fd(fd, result->std_out, stdout_size)) == -1)
-        return -1;
+    if (stdout_size)
+    {
+        if ((write_to_fd(fd, result->std_out, stdout_size)) == -1)
+            return -1;
+    }
 
     if ((write_to_fd(fd, (char *)&stderr_size, sizeof (int))) == -1)
         return -1;
 
-    if ((write_to_fd(fd, result->std_err, stderr_size)) == -1)
-        return -1;
+    if (stderr_size)
+    {
+        if ((write_to_fd(fd, result->std_err, stderr_size)) == -1)
+            return -1;
+    }
 
     return 0;
 }
@@ -251,33 +257,48 @@ compile_result_t *recv_compile_result(int fd)
     /* Read the size of std_out */
     TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
 
-    TREAT_ERROR((result->std_out = calloc(1, bytes_to_read)) == NULL);
+    if (bytes_to_read)
+    {
+        TREAT_ERROR((result->std_out = calloc(bytes_to_read, 1)) == NULL);
 
-    /* Read std_out */
-    while ((n = read(fd, result->std_out + pos, PIPE_BUF)) <= 0)
-        pos += n;
+        /* Read std_out */
+        while ((n = read(fd, result->std_out + pos, PIPE_BUF)) <= 0)
+        {
+            pos += n;
+            if (pos == bytes_to_read)
+                break;
+        }
 
-    /* Check fd error */
-    TREAT_ERROR(n < 0);
+        /* Check fd error */
+        TREAT_ERROR(n < 0);
 
-    n = 0;
-    pos = 0;
+        n = 0;
+        pos = 0;
+    }
 
     /* Read size of std_err */
     TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
 
-    TREAT_ERROR((result->std_err = calloc(1, bytes_to_read)) == NULL);
+    if (bytes_to_read)
+    {
+        TREAT_ERROR((result->std_err = calloc(bytes_to_read, 1)) == NULL);
 
-    /* Read std_err */
-    while ((n = read(fd, result->std_err + pos, PIPE_BUF)) <= 0)
-        pos += n;
+        /* Read std_err */
+        while ((n = read(fd, result->std_err + pos, PIPE_BUF)) <= 0)
+        {
+            pos += n;
+            if (pos == bytes_to_read)
+                break;
+        }
 
-    /* Check fd error */
-    TREAT_ERROR(n < 0);
+        /* Check fd error */
+        TREAT_ERROR(n < 0);
+    }
 
     return result;
 
 error:
+    printf("Error in recv_compile_result()\n");
     compile_result_free(&result);
     return NULL;
 }
