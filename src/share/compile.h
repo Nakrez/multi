@@ -55,7 +55,8 @@ int preprocess(char *input_file, char *output_file);
 void full_compilation(char *input_file, char *output_file);
 
 /* FIXME doc */
-int compile_without_preprocess(char *input_file, char *output_file);
+compile_result_t *compile_without_preprocess(char *input_file,
+                                             char *output_file);
 
 /**
 ** @brief Allocate a new compile_result structure

@@ -46,12 +46,12 @@ void full_compilation(char *input_file, char *output_file)
     execvp("gcc", argv);
 }
 
-static int close_pipe(int pipe_fd[2])
+static void *close_pipe(int pipe_fd[2])
 {
     close(pipe_fd[0]);
     close(pipe_fd[1]);
 
-    return -1;
+    return NULL;
 }
 
 static unsigned my_strlen(char *str)
@@ -91,7 +91,7 @@ static char *read_fd(int fd)
     return buf;
 }
 
-int compile_without_preprocess(char *input_file, char *output_file)
+compile_result_t *compile_without_preprocess(char *input_file, char *output_file)
 {
     /* TODO : build compile_result_t and return it */
     int status;
@@ -100,8 +100,10 @@ int compile_without_preprocess(char *input_file, char *output_file)
 
     pid_t pid;
 
+    compile_result_t *result = NULL;
+
     if (pipe(std_out))
-        return -1;
+        return NULL;
 
     if (pipe(std_err))
         return close_pipe(std_out);
@@ -113,6 +115,8 @@ int compile_without_preprocess(char *input_file, char *output_file)
         return close_pipe(std_out);
     }
 
+    result = compile_result_new();
+
     if (pid) /* Father */
     {
         close(std_out[1]);
@@ -120,8 +124,8 @@ int compile_without_preprocess(char *input_file, char *output_file)
 
         waitpid(pid, &status, 0);
 
-        /* printf("STDOUT : %s\n", read_fd(std_out[0])); */
-        /* printf("STDERR : %s\n", read_fd(std_err[0])); */
+        result->std_out = read_fd(std_out[0]);
+        result->std_err = read_fd(std_err[0]);
 
         close(std_out[0]);
         close(std_err[0]);
@@ -148,7 +152,9 @@ int compile_without_preprocess(char *input_file, char *output_file)
         execvp("gcc", argv);
     }
 
-    return WEXITSTATUS(status);
+    result->status = WEXITSTATUS(status);
+
+    return result;
 }
 
 compile_result_t *compile_result_new()

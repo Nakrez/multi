@@ -61,7 +61,10 @@ static void *compile_file(void *state)
 
     printf("File received. Processing... \n");
 
-    if (compile_without_preprocess(file->input_name, file->output_name) < 0)
+    file->result = compile_without_preprocess(file->input_name,
+                                              file->output_name);
+
+    if (!file->result)
         goto exit_thread;
 
     printf("File processed. Sending response...\n");

@@ -5,8 +5,10 @@ void process_file_free(process_file_t **file)
     if (!*file)
         return;
 
-    if ((*file)->input_name)
-        free((*file)->input_name);
+    /* output_name do not need to be free because it contains tmpnam value */
+
+    free((*file)->input_name);
+    compile_result_free(&(*file)->result);
 
     free(*file);
     *file = NULL;
@@ -38,6 +40,8 @@ process_file_t *process_file_new()
         process_file_free(&file);
         return NULL;
     }
+
+    file->result = NULL;
 
     return file;
 }

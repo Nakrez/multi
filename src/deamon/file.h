@@ -15,12 +15,15 @@
 # include <sys/wait.h>
 
 # include <share/language.h>
+# include <share/compile.h>
 
 typedef struct
 {
     char *input_name;
 
     char *output_name;
+
+    compile_result_t *result;
 
     e_language langage;
 } process_file_t;
