@@ -54,43 +54,6 @@ static void *close_pipe(int pipe_fd[2])
     return NULL;
 }
 
-static unsigned my_strlen(char *str)
-{
-    if (str)
-        return strlen(str);
-    else
-        return 0;
-}
-
-static char *read_fd(int fd)
-{
-    int read_byte = 0;
-    int pos = 0;
-
-    char temp_buf[PIPE_BUF];
-    char *buf = NULL;
-
-    while ((read_byte = read(fd, temp_buf, PIPE_BUF)) > 0)
-    {
-        buf = realloc(buf, my_strlen(buf) + 2 + read_byte);
-        strncpy(buf + pos, temp_buf, read_byte);
-        pos += read_byte;
-    }
-
-    if (read_byte < 0)
-    {
-        free(buf);
-        return NULL;
-    }
-
-    if (buf == NULL)
-        return NULL;
-
-    buf[pos] = 0;
-
-    return buf;
-}
-
 compile_result_t *compile_without_preprocess(char *input_file, char *output_file)
 {
     /* TODO : build compile_result_t and return it */

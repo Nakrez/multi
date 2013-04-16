@@ -1,37 +1,6 @@
 #include <share/socket.h>
 
 /**
-** @brief Write buffer @a data of size @a n in a file descriptor @a fd
-**
-** @param fd    The file descriptor where you want to write @a data
-** @param data  The data you want to write in @a fd
-** @param n     The size in byte you want to write in @a fd
-**
-** @return      0 if everything went well
-                -1 else
-*/
-static int write_to_fd(int fd, const char *data, size_t n)
-{
-    /* The amount of byte left to write */
-    size_t left_byte = n;
-    /* The amount of byte written */
-    size_t written_byte;
-
-    while (left_byte > 0)
-    {
-        /* Try to write left byte */
-        if ((written_byte = write(fd, data, left_byte)) <= 0)
-            return -1;
-
-        /* Update values */
-        left_byte -= written_byte;
-        data += written_byte;
-    }
-
-    return 0;
-}
-
-/**
 ** @brief Get the size of a file @a file
 **
 ** @param file  The file you want to know the size
@@ -65,6 +34,7 @@ int send_file(int socket_fd, const char *input_name)
     int read_bytes = 0;
     int file_size = 0;
 
+    /* FIXME optimise with PIPE_BUF */
     char buffer[1024];
 
     /* Open the input file */
@@ -107,6 +77,7 @@ int recv_file(int socket_fd, const char *output_name)
     int read_bytes = 0;
     int bytes_to_read = 0;
 
+    /* FIXME optimise with PIPE_BUF */
     char buffer[1024];
 
     /* Open the output file */
@@ -238,4 +209,69 @@ int create_client_socket(const char *addr, int port)
     }
 
     return socket_fd;
+}
+
+int send_compile_result(int fd, compile_result_t *result)
+{
+    const int stdout_size = neg_strlen(result->std_out) + 1;
+    const int stderr_size = neg_strlen(result->std_err) + 1;
+
+    if ((write_to_fd(fd, (char *)&stdout_size, sizeof (int))) == -1)
+        return -1;
+
+    if ((write_to_fd(fd, result->std_out, stdout_size)) == -1)
+        return -1;
+
+    if ((write_to_fd(fd, (char *)&stderr_size, sizeof (int))) == -1)
+        return -1;
+
+    if ((write_to_fd(fd, result->std_err, stderr_size)) == -1)
+        return -1;
+
+    return 0;
+}
+
+compile_result_t *recv_compile_result(int fd)
+{
+    compile_result_t *result = NULL;
+
+    int bytes_to_read = 0;
+    int pos = 0;
+    int n = 0;
+
+    if ((result = compile_result_new()) == NULL)
+        return NULL;
+
+    /* Read the size of std_out */
+    TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
+
+    TREAT_ERROR((result->std_out = malloc(bytes_to_read)) == NULL);
+
+    /* Read std_out */
+    while ((n = read(fd, result->std_out + pos, PIPE_BUF)) <= 0)
+        pos += n;
+
+    /* Check fd error */
+    TREAT_ERROR(n < 0);
+
+    n = 0;
+    pos = 0;
+
+    /* Read size of std_err */
+    TREAT_ERROR(read(fd, (char *)&bytes_to_read, sizeof (int)) != sizeof (int));
+
+    TREAT_ERROR((result->std_err = malloc(bytes_to_read)) == NULL);
+
+    /* Read std_err */
+    while ((n = read(fd, result->std_err + pos, PIPE_BUF)) <= 0)
+        pos += n;
+
+    /* Check fd error */
+    TREAT_ERROR(n < 0);
+
+    return result;
+
+error:
+    compile_result_free(&result);
+    return NULL;
 }

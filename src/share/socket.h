@@ -21,6 +21,7 @@
 
 # include <share/error.h>
 # include <share/config.h>
+# include <share/compile.h>
 
 /**
 ** @brief Send a file to a file descriptor (can be socket or file)
@@ -68,5 +69,35 @@ int create_server_socket(int port);
             -1 if it failed
 */
 int create_client_socket(const char *addr, int port);
+
+/**
+ */
+
+/**
+** @brief Send the result of the compilation to a file descriptor
+**        Compilation result only include compile stdout, stderr and exit
+**        status. File resulting of compilation will eventually be sent after
+**        but not handled by @a send_compile_result
+**
+** @param   fd      The file descriptor to which you want to send the
+                    compilation result
+** @param   result  The compilation result you want to send
+**
+** @return          0 if everything went well, -1 else
+*/
+int send_compile_result(int fd, compile_result_t *result);
+
+/**
+** @brief Receive the result of a compilation from a file descriptor
+**        Compilation result only include compile stdout, stderr and exit
+**        status. File resulting of compilation will eventually be sent after
+**        but not handled by @a send_compile_result
+**
+** @param   fd  The file descriptor where @a recv_compile_result will read
+**              the compilation result
+**
+** @return  The compilation result if everything went well, NULL else
+*/
+compile_result_t *recv_compile_result(int fd);
 
 #endif /* !SOCKET_H */

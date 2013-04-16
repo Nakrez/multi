@@ -12,12 +12,11 @@
 # include <stdlib.h>
 # include <string.h>
 
-# include <linux/limits.h>
-
 # include <sys/wait.h>
 # include <sys/types.h>
 
 # include <share/error.h>
+# include <share/utils.h>
 
 /**
 ** @brief Represent the output of the compiler

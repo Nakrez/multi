@@ -7,6 +7,7 @@ set(CMAKE_C_FLAGS_RELEASE "-Wall -Wextra -std=c99 -I${CMAKE_CURRENT_SOURCE_DIR}/
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG}")
 
 add_library(multi_lib SHARED
+            src/share/utils.c
             src/share/compile.c
             src/share/socket.c)
 
