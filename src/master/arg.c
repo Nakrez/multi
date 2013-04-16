@@ -1,11 +1,16 @@
 #include <master/arg.h>
 
+/*
+ * TODO : handle -h|--help
+ * TODO : Optimize size of config->argv to avoid realloc
+ */
 config_t *process_args(int argc, char *argv[])
 {
     /* -4 because -o FILE -c FILE */
     int compiler_args_end = argc - 4;
     int input_place = argc - 3;
     int output_place = argc - 1;
+    int pos = 0;
 
     config_t *config = NULL;
 
@@ -15,10 +20,21 @@ config_t *process_args(int argc, char *argv[])
         return NULL;
     }
 
-    // TODO : Handle compiler args
     for (int i = 1; i < compiler_args_end; ++i)
     {
-        printf("Compiler args : %s\n", argv[i]);
+        /* + 2 for separating space and final '\0' */
+        config->argv = realloc(config->argv, zero_strlen(config->argv) +
+                               strlen(argv[i]) + 2);
+
+        strcpy(config->argv + pos, argv[i]);
+
+        pos += strlen(argv[i]);
+
+        config->argv[pos] = ' ';
+        config->argv[pos + 1] = 0;
+
+        /* to handled added ' ' */
+        ++pos;
     }
 
     // FIXME : Handle errors

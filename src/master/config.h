@@ -22,7 +22,7 @@ typedef struct
 
     int socket_fd;
 
-    char *argv[];
+    char *argv;
 } config_t;
 
 /* FIXME doc */

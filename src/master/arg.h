@@ -10,6 +10,7 @@
 # include <string.h>
 
 # include <share/error.h>
+# include <share/utils.h>
 
 # include <master/config.h>
 

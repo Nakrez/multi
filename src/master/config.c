@@ -12,19 +12,25 @@ config_t *config_new()
 
     config->result = NULL;
     config->socket_fd = -1;
+    config->argv = NULL;
 
     return config;
 }
 
 void config_free(config_t **config)
 {
-    multi_file_free(&(*config)->file);
+    if (*config)
+    {
+        multi_file_free(&(*config)->file);
 
-    compile_result_free(&(*config)->result);
+        compile_result_free(&(*config)->result);
 
-    if ((*config)->socket_fd > -1)
-        close((*config)->socket_fd);
+        if ((*config)->socket_fd > -1)
+            close((*config)->socket_fd);
 
-    free(*config);
-    *config = NULL;
+        free((*config)->argv);
+
+        free(*config);
+        *config = NULL;
+    }
 }
