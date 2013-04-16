@@ -6,17 +6,11 @@
 /* FIXME doc */
 static int client_preprocess(config_t *config)
 {
-
-    printf("Preprocessing file %s\n", config->file->input_file);
-
     if (preprocess(config->file->input_file, config->file->output_file))
     {
         config_free(&config);
         return 1;
     }
-
-    printf("Preprocessing done\n");
-    printf("Sending file to server for compilation\n");
 
     if (send_file(config->socket_fd, config->file->output_file) < 0)
     {
@@ -27,8 +21,6 @@ static int client_preprocess(config_t *config)
 
         /* Never reached */
     }
-
-    printf("File sent waiting for response\n");
 
     return 0;
 }
@@ -54,14 +46,24 @@ static int client_retrieve_data(config_t *config)
         /* Never reached */
     }
 
-    printf("File received\n");
-
     return 0;
+}
+
+/* FIXME doc */
+static void print_compile_result(compile_result_t *result)
+{
+    if (result->std_out)
+        fprintf(stdout, result->std_out);
+
+    if (result->std_err)
+        fprintf(stderr, result->std_err);
 }
 
 /* FIXME doc */
 static int core_client(config_t *config)
 {
+    int return_value = 0;
+
     /* Preprocess the file and send it to the server */
     if (client_preprocess(config))
         return 1;
@@ -70,9 +72,13 @@ static int core_client(config_t *config)
     if (client_retrieve_data(config))
         return 1;
 
+    print_compile_result(config->result);
+
+    return_value = config->result->status;
+
     config_free(&config);
 
-    return 0;
+    return return_value;
 }
 
 int launch_client(int argc, char *argv[])
