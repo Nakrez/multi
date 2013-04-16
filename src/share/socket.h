@@ -59,6 +59,13 @@ int recv_file(int socket_fd, const char *output_name);
 int create_server_socket(int port);
 
 /**
+** @brief Initialise a socket connection with a server
+**
+** @param   addr    The address of the server
+** @param   port    The port of the server
+**
+** @return  The fd of the socket connection with the server
+            -1 if it failed
 */
 int create_client_socket(const char *addr, int port);
 
