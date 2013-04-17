@@ -54,12 +54,50 @@ static void *close_pipe(int pipe_fd[2])
     return NULL;
 }
 
-compile_result_t *compile_without_preprocess(char *input_file, char *output_file)
+/* FIXME : buf somewhere */
+static void setup_gcc_arg(char *tab[],
+                          char *str,
+                          char *input_file,
+                          char *output_file)
+{
+    int pos = 2;
+    char *base = str;
+
+    tab[0] = "gcc";
+    tab[1] = "-fpreprocessed";
+
+    if (str)
+    {
+        while (*str)
+        {
+            if (*str == ' ')
+            {
+                *str = 0;
+                tab[pos++] = base;
+                base = str + 1;
+            }
+
+            ++str;
+        }
+    }
+
+    tab[pos] = "-c";
+    tab[pos + 1] = input_file;
+    tab[pos + 2] = "-o";
+    tab[pos + 3] = output_file;
+    tab[pos + 4] = NULL;
+}
+
+compile_result_t *compile_without_preprocess(char *input_file,
+                                             char *output_file,
+                                             char *argv)
 {
     /* TODO : build compile_result_t and return it */
     int status;
     int std_out[2];
     int std_err[2];
+
+    char *argv_splited[7 + count_occurence(argv, ' ')];
 
     pid_t pid;
 
@@ -79,6 +117,7 @@ compile_result_t *compile_without_preprocess(char *input_file, char *output_file
     }
 
     result = compile_result_new();
+    setup_gcc_arg(argv_splited, argv, input_file, output_file);
 
     if (pid) /* Father */
     {
@@ -101,22 +140,10 @@ compile_result_t *compile_without_preprocess(char *input_file, char *output_file
         dup2(std_out[1], STDOUT_FILENO);
         dup2(std_err[1], STDERR_FILENO);
 
-        char *argv[] =
-        {
-            "gcc",
-            "-fpreprocessed",
-            "-c",
-            input_file,
-            "-o",
-            output_file,
-            NULL
-        };
-
-        execvp("gcc", argv);
+        execvp("gcc", argv_splited);
     }
 
     result->status = WEXITSTATUS(status);
-    printf("GET %d\n", status);
 
     return result;
 }

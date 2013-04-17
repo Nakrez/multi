@@ -55,7 +55,8 @@ void full_compilation(char *input_file, char *output_file);
 
 /* FIXME doc */
 compile_result_t *compile_without_preprocess(char *input_file,
-                                             char *output_file);
+                                             char *output_file,
+                                             char *argv);
 
 /**
 ** @brief Allocate a new compile_result structure

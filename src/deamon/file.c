@@ -9,6 +9,7 @@ void process_file_free(process_file_t **file)
 
     free((*file)->input_name);
     compile_result_free(&(*file)->result);
+    free((*file)->argv);
 
     free(*file);
     *file = NULL;
@@ -41,6 +42,7 @@ process_file_t *process_file_new()
         return NULL;
     }
 
+    file->argv = NULL;
     file->result = NULL;
 
     return file;

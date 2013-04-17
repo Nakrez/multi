@@ -6,11 +6,19 @@
 /* FIXME doc */
 static int client_preprocess(config_t *config)
 {
+    int argv_len = zero_strlen(config->argv);
+
     if (preprocess(config->file->input_file, config->file->output_file))
     {
         config_free(&config);
         return 1;
     }
+
+    /* TODO : Handle errors */
+    write_to_fd(config->socket_fd, (char *)&argv_len, sizeof (int));
+
+    if (config->argv)
+        write_to_fd(config->socket_fd, config->argv, strlen(config->argv));
 
     if (send_file(config->socket_fd, config->file->output_file) < 0)
     {
@@ -36,14 +44,17 @@ static int client_retrieve_data(config_t *config)
         full_compilation(config->file->input_file, config->file->output_file);
     }
 
-    if (recv_file(config->socket_fd, config->file->output_file) < 0)
+    if (!config->result->status)
     {
-        ERROR_MSG("Error: Can not receive compiled file from the server\n");
-        close(config->socket_fd);
+        if (recv_file(config->socket_fd, config->file->output_file) < 0)
+        {
+            ERROR_MSG("Error: Can not receive compiled file from the server\n");
+            close(config->socket_fd);
 
-        full_compilation(config->file->input_file, config->file->output_file);
+            full_compilation(config->file->input_file, config->file->output_file);
 
-        /* Never reached */
+            /* Never reached */
+        }
     }
 
     return 0;

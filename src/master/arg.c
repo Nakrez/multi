@@ -8,8 +8,8 @@ config_t *process_args(int argc, char *argv[])
 {
     /* -4 because -o FILE -c FILE */
     int compiler_args_end = argc - 4;
-    int input_place = argc - 3;
-    int output_place = argc - 1;
+    int output_place = argc - 3;
+    int input_place = argc - 1;
     int pos = 0;
 
     config_t *config = NULL;

@@ -56,11 +56,31 @@ static void *compile_file(void *state)
 
     file = process_file_new();
 
+    /* TODO : clean it */
+    int argv_size = 0;
+    int pos = 0;
+    int n = 0;
+
+    read(thread_state->cli_fd, (char *)&argv_size, sizeof (int));
+
+    if (argv_size)
+    {
+        file->argv = malloc(argv_size + 1);
+
+        while ((n = read(thread_state->cli_fd, file->argv + pos,
+                         argv_size - pos)) > 0)
+            pos += n;
+
+        file->argv[pos] = 0;
+    }
+    /* End TODO */
+
     if (recv_file(thread_state->cli_fd, file->input_name) < 0)
         goto exit_thread;
 
     file->result = compile_without_preprocess(file->input_name,
-                                              file->output_name);
+                                              file->output_name,
+                                              file->argv);
 
     if (!file->result)
         goto exit_thread;
@@ -68,8 +88,11 @@ static void *compile_file(void *state)
     /* FIXME handle error */
     send_compile_result(thread_state->cli_fd, file->result);
 
-    if (send_file(thread_state->cli_fd, file->output_name) < 0)
-        goto exit_thread;
+    if (!file->result->status)
+    {
+        if (send_file(thread_state->cli_fd, file->output_name) < 0)
+            goto exit_thread;
+    }
 
 exit_thread:
     if (file)

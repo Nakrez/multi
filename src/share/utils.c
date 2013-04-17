@@ -1,5 +1,23 @@
 #include <share/utils.h>
 
+unsigned count_occurence(char *str, char c)
+{
+    unsigned count = 0;
+
+    if (!str)
+        return 0;
+
+    while (*str)
+    {
+        if (*str == c)
+            ++count;
+
+        ++str;
+    }
+
+    return count;
+}
+
 unsigned zero_strlen(char *str)
 {
     if (str)

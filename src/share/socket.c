@@ -262,7 +262,7 @@ compile_result_t *recv_compile_result(int fd)
         TREAT_ERROR((result->std_out = calloc(bytes_to_read, 1)) == NULL);
 
         /* Read std_out */
-        while ((n = read(fd, result->std_out + pos, bytes_to_read - pos)) <= 0)
+        while ((n = read(fd, result->std_out + pos, bytes_to_read - pos)) > 0)
         {
             pos += n;
             if (pos == bytes_to_read)
@@ -284,7 +284,7 @@ compile_result_t *recv_compile_result(int fd)
         TREAT_ERROR((result->std_err = calloc(bytes_to_read, 1)) == NULL);
 
         /* Read std_err */
-        while ((n = read(fd, result->std_err + pos, bytes_to_read - pos)) < 0)
+        while ((n = read(fd, result->std_err + pos, bytes_to_read - pos)) > 0)
         {
             pos += n;
             if (pos == bytes_to_read)

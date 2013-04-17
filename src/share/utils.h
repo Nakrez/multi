@@ -15,6 +15,9 @@
 # include <linux/limits.h>
 
 /* FIXME doc */
+unsigned count_occurence(char *str, char c);
+
+/* FIXME doc */
 unsigned zero_strlen(char *str);
 
 /* FIXME doc */
