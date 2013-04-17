@@ -1,70 +1,20 @@
 #include <share/compile.h>
 
-int preprocess(char *input_file, char *output_file)
-{
-    int status = 0;
-
-    pid_t pid;
-
-    if ((pid = fork()) < 0)
-        return -1;
-
-    if (pid)
-        waitpid(pid, &status, 0);
-    else
-    {
-        char *argv[] =
-        {
-            "gcc",
-            "-E",
-            input_file,
-            "-o",
-            output_file,
-            NULL
-        };
-
-        execvp("gcc", argv);
-    }
-
-    return WEXITSTATUS(status);
-}
-
-void full_compilation(char *input_file, char *output_file)
-{
-    ERROR_MSG("Invoking gcc -c %s -o %s\n", input_file, output_file);
-
-    char *argv[] =
-    {
-        "gcc",
-        "-c",
-        input_file,
-        "-o",
-        output_file,
-        NULL
-    };
-
-    execvp("gcc", argv);
-}
-
-static void *close_pipe(int pipe_fd[2])
-{
-    close(pipe_fd[0]);
-    close(pipe_fd[1]);
-
-    return NULL;
-}
-
 /* FIXME : buf somewhere */
 static void setup_gcc_arg(char *tab[],
                           char *str,
-                          char *input_file,
-                          char *output_file)
+                          char *opt)
 {
-    int pos = 2;
+    int pos = 1;
     char *base = str;
 
     tab[0] = "gcc";
-    tab[1] = "-fpreprocessed";
+
+    if (opt)
+    {
+        tab[1] = opt;
+        pos = 2;
+    }
 
     if (str)
     {
@@ -81,11 +31,48 @@ static void setup_gcc_arg(char *tab[],
         }
     }
 
-    tab[pos] = "-c";
-    tab[pos + 1] = input_file;
-    tab[pos + 2] = "-o";
-    tab[pos + 3] = output_file;
-    tab[pos + 4] = NULL;
+    tab[pos] = NULL;
+}
+
+int preprocess(char *argv)
+{
+    int status = 0;
+    char *argv_splited[3 + count_occurence(argv, ' ')];
+
+    pid_t pid;
+
+    if ((pid = fork()) < 0)
+        return -1;
+
+    if (pid)
+        waitpid(pid, &status, 0);
+    else
+    {
+        setup_gcc_arg(argv_splited, argv, "-E");
+
+        execvp("gcc", argv_splited);
+    }
+
+    return WEXITSTATUS(status);
+}
+
+void full_compilation(char *argv)
+{
+    ERROR_MSG("Invoking gcc %s\n", argv);
+
+    char *argv_splited[count_occurence(argv, ' ') + 2];
+
+    setup_gcc_arg(argv_splited, argv, NULL);
+
+    execvp("gcc", argv_splited);
+}
+
+static void *close_pipe(int pipe_fd[2])
+{
+    close(pipe_fd[0]);
+    close(pipe_fd[1]);
+
+    return NULL;
 }
 
 compile_result_t *compile_without_preprocess(char *input_file,
@@ -96,8 +83,9 @@ compile_result_t *compile_without_preprocess(char *input_file,
     int status;
     int std_out[2];
     int std_err[2];
+    int size_argv = count_occurence(argv, ' ') + 3;
 
-    char *argv_splited[7 + count_occurence(argv, ' ')];
+    char *argv_splited[size_argv];
 
     pid_t pid;
 
@@ -117,7 +105,6 @@ compile_result_t *compile_without_preprocess(char *input_file,
     }
 
     result = compile_result_new();
-    setup_gcc_arg(argv_splited, argv, input_file, output_file);
 
     if (pid) /* Father */
     {
@@ -134,6 +121,11 @@ compile_result_t *compile_without_preprocess(char *input_file,
     }
     else /* Child */
     {
+        setup_gcc_arg(argv_splited, argv, "-fpreprocessed");
+
+        argv_splited[size_argv - 2] = input_file;
+        argv_splited[size_argv - 4] = output_file;
+
         close(std_out[0]);
         close(std_err[0]);
 

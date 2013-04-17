@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc < 5)
+    if (argc == 0)
     {
         usage();
         return 0;

@@ -6,8 +6,6 @@
  */
 config_t *process_args(int argc, char *argv[])
 {
-    /* -4 because -o FILE -c FILE */
-    int compiler_args_end = argc - 4;
     int output_place = argc - 3;
     int input_place = argc - 1;
     int pos = 0;
@@ -20,7 +18,7 @@ config_t *process_args(int argc, char *argv[])
         return NULL;
     }
 
-    for (int i = 1; i < compiler_args_end; ++i)
+    for (int i = 1; i < argc; ++i)
     {
         /* + 2 for separating space and final '\0' */
         config->argv = realloc(config->argv, zero_strlen(config->argv) +
@@ -37,12 +35,17 @@ config_t *process_args(int argc, char *argv[])
         ++pos;
     }
 
-    // FIXME : Handle errors
-    config->file->output_file = malloc(strlen(argv[output_place]) + 1);
-    config->file->input_file = malloc(strlen(argv[input_place]) + 1);
+    if (input_place > 1 && !strcmp(argv[input_place - 1], "-c"))
+    {
+        config->file->input_file = malloc(strlen(argv[output_place]) + 1);
+        strcpy(config->file->input_file, argv[input_place]);
+    }
 
-    strcpy(config->file->input_file, argv[input_place]);
-    strcpy(config->file->output_file, argv[output_place]);
+    if (output_place > 1 && !strcmp(argv[output_place - 1], "-o"))
+    {
+        config->file->output_file = malloc(strlen(argv[output_place]) + 1);
+        strcpy(config->file->output_file, argv[output_place]);
+    }
 
     return config;
 }

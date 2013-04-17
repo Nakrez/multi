@@ -48,10 +48,10 @@ typedef struct
 ** @return The value returned by the compiler
 **         -1 if an error occured before compiler instanciation
 */
-int preprocess(char *input_file, char *output_file);
+int preprocess(char *argv);
 
 /* FIXME add doc */
-void full_compilation(char *input_file, char *output_file);
+void full_compilation(char *argv);
 
 /* FIXME doc */
 compile_result_t *compile_without_preprocess(char *input_file,
