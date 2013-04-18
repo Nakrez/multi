@@ -44,6 +44,12 @@ void thread_state_free(thread_state_t **state)
     if ((*state)->cli_fd > -1)
         close((*state)->cli_fd);
 
+    /* TODO : fix bug */
+    /* for (int i = 0; i < (*state)->argc; ++i) */
+    /*     free((*state)->argv[i]); */
+
+    free((*state)->argv);
+
     free(*state);
 
     *state = NULL;

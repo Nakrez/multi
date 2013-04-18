@@ -67,7 +67,9 @@ static void *compile_file(void *state)
                      file->input_name,
                      file->output_name);
 
-    file->result = compile_without_preprocess(thread_state->argv);
+    file->result = compile_without_preprocess(thread_state->argc,
+                                              thread_state->argv);
+    printf("LOL\n");
 
     if (!file->result)
         goto exit_thread;

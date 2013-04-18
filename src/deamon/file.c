@@ -23,7 +23,7 @@ process_file_t *process_file_new()
     if ((file = malloc(sizeof (process_file_t))) == NULL)
         return NULL;
 
-    if ((file->input_name = tmpnam(NULL)) == NULL)
+    if ((file->input_name = tempnam("/tmp/", NULL)) == NULL)
     {
         process_file_free(&file);
         return NULL;
@@ -35,7 +35,7 @@ process_file_t *process_file_new()
 
     file->input_name = tmp;
 
-    if ((file->output_name = tmpnam(NULL)) == NULL)
+    if ((file->output_name = tempnam("/tmp/", NULL)) == NULL)
     {
         process_file_free(&file);
         return NULL;

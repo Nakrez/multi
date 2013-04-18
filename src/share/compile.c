@@ -46,7 +46,7 @@ static void *close_pipe(int pipe_fd[2])
     return NULL;
 }
 
-compile_result_t *compile_without_preprocess(char **argv)
+compile_result_t *compile_without_preprocess(int argc, char **argv)
 {
     /* TODO : build compile_result_t and return it */
     int status;
@@ -87,13 +87,19 @@ compile_result_t *compile_without_preprocess(char **argv)
     }
     else /* Child */
     {
+        char **new_argv = dup_argv(argc, argv);
+        new_argv[0] = "gcc";
+
+        add_argv(argc++, &new_argv, "-fpreprocessed");
+        add_argv(argc++, &new_argv, NULL);
+
         close(std_out[0]);
         close(std_err[0]);
 
         dup2(std_out[1], STDOUT_FILENO);
         dup2(std_err[1], STDERR_FILENO);
 
-        execvp("gcc", argv);
+        execvp("gcc", new_argv);
     }
 
     result->status = WEXITSTATUS(status);

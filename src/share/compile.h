@@ -55,7 +55,7 @@ int preprocess(int argc, char **argv);
 void full_compilation(int argc, char **argv);
 
 /* FIXME doc */
-compile_result_t *compile_without_preprocess(char **argv);
+compile_result_t *compile_without_preprocess(int argc, char **argv);
 
 /**
 ** @brief Allocate a new compile_result structure
