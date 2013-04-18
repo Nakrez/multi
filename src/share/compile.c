@@ -34,10 +34,10 @@ static void setup_gcc_arg(char *tab[],
     tab[pos] = NULL;
 }
 
-int preprocess(char *argv)
+int preprocess(int argc, char **argv)
 {
     int status = 0;
-    char *argv_splited[3 + count_occurence(argv, ' ')];
+    char **new_argv = NULL;
 
     pid_t pid;
 
@@ -48,23 +48,28 @@ int preprocess(char *argv)
         waitpid(pid, &status, 0);
     else
     {
-        setup_gcc_arg(argv_splited, argv, "-E");
+        new_argv = dup_argv(argc, argv);
+        new_argv[0] = "gcc";
 
-        execvp("gcc", argv_splited);
+        add_argv(argc++, &new_argv, "-E");
+        add_argv(argc++, &new_argv, NULL);
+
+        execvp("gcc", new_argv);
     }
 
     return WEXITSTATUS(status);
 }
 
-void full_compilation(char *argv)
+void full_compilation(int argc, char **argv)
 {
-    ERROR_MSG("Invoking gcc %s\n", argv);
+    char **new_argv = NULL;
 
-    char *argv_splited[count_occurence(argv, ' ') + 2];
+    new_argv = dup_argv(argc, argv);
+    new_argv[0] = "gcc";
 
-    setup_gcc_arg(argv_splited, argv, NULL);
+    add_argv(argc++, &new_argv, NULL);
 
-    execvp("gcc", argv_splited);
+    execvp("gcc", new_argv);
 }
 
 static void *close_pipe(int pipe_fd[2])

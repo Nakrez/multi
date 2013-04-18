@@ -17,6 +17,7 @@
 
 # include <share/error.h>
 # include <share/utils.h>
+# include <share/arg.h>
 
 /**
 ** @brief Represent the output of the compiler
@@ -48,10 +49,10 @@ typedef struct
 ** @return The value returned by the compiler
 **         -1 if an error occured before compiler instanciation
 */
-int preprocess(char *argv);
+int preprocess(int argc, char **argv);
 
 /* FIXME add doc */
-void full_compilation(char *argv);
+void full_compilation(int argc, char **argv);
 
 /* FIXME doc */
 compile_result_t *compile_without_preprocess(char *input_file,

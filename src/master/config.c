@@ -12,6 +12,7 @@ config_t *config_new()
 
     config->result = NULL;
     config->socket_fd = -1;
+    config->argc = 0;
     config->argv = NULL;
 
     return config;
@@ -27,8 +28,6 @@ void config_free(config_t **config)
 
         if ((*config)->socket_fd > -1)
             close((*config)->socket_fd);
-
-        free((*config)->argv);
 
         free(*config);
         *config = NULL;

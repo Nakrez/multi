@@ -9,6 +9,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG}")
 add_library(multi_lib SHARED
             src/share/utils.c
             src/share/compile.c
+            src/share/arg.c
             src/share/socket.c)
 
 SET_TARGET_PROPERTIES(

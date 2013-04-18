@@ -6,26 +6,21 @@
 /* FIXME doc */
 static int client_preprocess(config_t *config)
 {
-    int argv_len = zero_strlen(config->argv);
-
-    if (preprocess(config->argv))
+    if (preprocess(config->argc, config->argv))
     {
         config_free(&config);
         return 1;
     }
 
     /* TODO : Handle errors */
-    write_to_fd(config->socket_fd, (char *)&argv_len, sizeof (int));
-
-    if (config->argv)
-        write_to_fd(config->socket_fd, config->argv, strlen(config->argv));
+    send_argv(config->socket_fd, config->argc, config->argv);
 
     if (send_file(config->socket_fd, config->file->output_file) < 0)
     {
         ERROR_MSG("Error: Can not send file to the server\n");
         close(config->socket_fd);
 
-        full_compilation(config->argv);
+        full_compilation(config->argc, config->argv);
 
         /* Never reached */
     }
@@ -41,7 +36,7 @@ static int client_retrieve_data(config_t *config)
         ERROR_MSG("Error: Can not receive compiler state from the server\n");
         close(config->socket_fd);
 
-        full_compilation(config->argv);
+        full_compilation(config->argc, config->argv);
     }
 
     if (!config->result->status)
@@ -51,7 +46,7 @@ static int client_retrieve_data(config_t *config)
             ERROR_MSG("Error: Can not receive compiled file from the server\n");
             close(config->socket_fd);
 
-            full_compilation(config->argv);
+            full_compilation(config->argc, config->argv);
 
             /* Never reached */
         }
@@ -101,13 +96,13 @@ int launch_client(int argc, char *argv[])
         return 1;
 
     if (!config->file->input_file || !config->file->output_file)
-        full_compilation(config->argv);
+        full_compilation(config->argc, config->argv);
 
     if ((config->socket_fd = create_client_socket(IP, MULTI_PORT)) < 0)
     {
         ERROR_MSG("Error: Can not create socket\n");
 
-        full_compilation(config->argv);
+        full_compilation(config->argc, config->argv);
 
         /* Return will be ignored since compiler will remplace multi */
         return 1;

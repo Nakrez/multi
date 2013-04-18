@@ -15,9 +15,6 @@ multi_file_t *multi_file_new()
 
 void multi_file_free(multi_file_t **file)
 {
-    free((*file)->input_file);
-    free((*file)->output_file);
-
     free(*file);
 
     *file = NULL;

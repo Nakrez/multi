@@ -302,3 +302,8 @@ error:
     compile_result_free(&result);
     return NULL;
 }
+
+int send_argv(int fd, int argc, char **argv)
+{
+
+}
