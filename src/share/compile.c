@@ -118,8 +118,8 @@ compile_result_t *compile_without_preprocess(char *input_file,
 
         waitpid(pid, &status, 0);
 
-        result->std_out = read_fd(std_out[0]);
-        result->std_err = read_fd(std_err[0]);
+        result->std_out = read_all_fd(std_out[0]);
+        result->std_err = read_all_fd(std_err[0]);
 
         close(std_out[0]);
         close(std_err[0]);

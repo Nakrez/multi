@@ -18,6 +18,10 @@ typedef struct
     /* The socket of the client */
     int cli_fd;
 
+    int argc;
+
+    char **argv;
+
     /* The pthread of the running thread */
     pthread_t thread;
 } thread_state_t;

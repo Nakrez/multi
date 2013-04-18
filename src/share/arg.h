@@ -16,4 +16,7 @@ char **dup_argv(int argc, char **argv);
 /* FIXME doc */
 void add_argv(int argc, char ***argv, char *str);
 
+/* FIXME doc */
+int concate_argv(int argc, char **argv, char **result);
+
 #endif /* !ARG_H */

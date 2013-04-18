@@ -305,5 +305,35 @@ error:
 
 int send_argv(int fd, int argc, char **argv)
 {
+    int argv_len;
+    char *buf;
 
+    /* TODO Error handling */
+    argv_len = concate_argv(argc, argv, &buf);
+
+    if ((write_to_fd(fd, (char *)&argv_len, sizeof (int))) == -1)
+    {
+        free(buf);
+        return -1;
+    }
+
+    if ((write_to_fd(fd, buf, argv_len)) == -1)
+    {
+        free(buf);
+        return -1;
+    }
+
+    free(buf);
+
+    return 0;
+}
+
+int recv_argv(int fd, int *argc, char ***argv)
+{
+    char *linear_argv = NULL;
+
+    TREAT_ERROR(read(fd, (char *)argc, sizeof (int)) != sizeof (int));
+
+error:
+    return -1;
 }

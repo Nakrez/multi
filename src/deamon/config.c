@@ -32,12 +32,15 @@ thread_state_t *thread_state_new()
         return NULL;
 
     state->cli_fd = -1;
+    state->argc = 0;
+    state->argv = NULL;
 
     return state;
 }
 
 void thread_state_free(thread_state_t **state)
 {
+    /* TODO : free argv */
     if ((*state)->cli_fd > -1)
         close((*state)->cli_fd);
 

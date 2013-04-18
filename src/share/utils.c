@@ -34,7 +34,25 @@ int neg_strlen(const char *str)
         return -1;
 }
 
-char *read_fd(int fd)
+int read_fd(int fd, int size, char **buf)
+{
+    int read_byte = 0;
+    int pos = 0;
+
+    while ((read_byte = read(fd, *buf + pos, size - read_byte)) > 0)
+    {
+        pos += read_byte;
+    }
+
+    if (read_byte < 0)
+        return -1;
+
+    buf[pos] = 0;
+
+    return 0;
+}
+
+char *read_all_fd(int fd)
 {
     int read_byte = 0;
     int pos = 0;

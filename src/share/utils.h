@@ -24,7 +24,10 @@ unsigned zero_strlen(char *str);
 int neg_strlen(const char *str);
 
 /* FIXME doc */
-char *read_fd(int fd);
+int read_fd(int fd, int size, char **buf);
+
+/* FIXME doc */
+char *read_all_fd(int fd);
 
 /**
 ** @brief Write buffer @a data of size @a n in a file descriptor @a fd

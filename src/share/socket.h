@@ -22,6 +22,7 @@
 # include <share/error.h>
 # include <share/config.h>
 # include <share/compile.h>
+# include <share/arg.h>
 
 /**
 ** @brief Send a file to a file descriptor (can be socket or file)
