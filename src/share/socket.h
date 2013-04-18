@@ -103,4 +103,6 @@ compile_result_t *recv_compile_result(int fd);
 
 int send_argv(int fd, int argc, char **argv);
 
+int recv_argv(int fd, int *argc, char ***argv);
+
 #endif /* !SOCKET_H */

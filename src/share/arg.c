@@ -60,3 +60,71 @@ int concate_argv(int argc, char **argv, char **result)
 
     return size;
 }
+
+int split_argv(char *argv, char ***result)
+{
+    int old = -1;
+    int new = 0;
+    int i = 0;
+    int argc = count_occurence(argv, ' ') + 1;
+
+    char *temp = argv;
+
+    *result = malloc((argc + 1) * sizeof (char *));
+
+    while (1)
+    {
+        if (*temp == ' ' || !*temp)
+        {
+            (*result)[i] = malloc(new - old);
+            strncpy((*result)[i], argv + old + 1, new - old);
+            (*result)[i][new - old - 1] = 0;
+
+            ++i;
+
+            if (!*temp)
+                break;
+
+            old = new;
+        }
+        ++temp;
+        ++new;
+    }
+
+    (*result)[i] = NULL;
+
+    return argc;
+}
+
+/* TODO : Clean that crap */
+static int is_source(char *src)
+{
+    int len = strlen(src);
+
+    if (len < 3)
+        return 0;
+
+    return src[0] != '-' && !strcmp(src + len - 2, ".c");
+}
+
+static int is_obj(char *src)
+{
+    int len = strlen(src);
+
+    if (len < 3)
+        return 0;
+
+    return src[0] != '-' && !strcmp(src + len - 2, ".o");
+}
+/* END TODO*/
+
+void update_argv_file(int argc, char **argv, char *input_file, char *output_file)
+{
+    for (int i = 0; i < argc; ++i)
+    {
+        if (is_source(argv[i]))
+            argv[i] = input_file;
+        if (is_obj(argv[i]))
+            argv[i] = output_file;
+    }
+}

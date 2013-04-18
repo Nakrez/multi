@@ -10,6 +10,8 @@
 # include <stdlib.h>
 # include <string.h>
 
+# include <share/utils.h>
+
 /* FIXME doc */
 char **dup_argv(int argc, char **argv);
 
@@ -18,5 +20,11 @@ void add_argv(int argc, char ***argv, char *str);
 
 /* FIXME doc */
 int concate_argv(int argc, char **argv, char **result);
+
+/* FIXME doc */
+int split_argv(char *argv, char ***result);
+
+/* FIXME doc */
+void update_argv_file(int argc, char **argv, char *input_file, char *output_file);
 
 #endif /* !ARG_H */

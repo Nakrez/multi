@@ -1,39 +1,5 @@
 #include <share/compile.h>
 
-/* FIXME : buf somewhere */
-static void setup_gcc_arg(char *tab[],
-                          char *str,
-                          char *opt)
-{
-    int pos = 1;
-    char *base = str;
-
-    tab[0] = "gcc";
-
-    if (opt)
-    {
-        tab[1] = opt;
-        pos = 2;
-    }
-
-    if (str)
-    {
-        while (*str)
-        {
-            if (*str == ' ')
-            {
-                *str = 0;
-                tab[pos++] = base;
-                base = str + 1;
-            }
-
-            ++str;
-        }
-    }
-
-    tab[pos] = NULL;
-}
-
 int preprocess(int argc, char **argv)
 {
     int status = 0;
@@ -80,17 +46,12 @@ static void *close_pipe(int pipe_fd[2])
     return NULL;
 }
 
-compile_result_t *compile_without_preprocess(char *input_file,
-                                             char *output_file,
-                                             char *argv)
+compile_result_t *compile_without_preprocess(char **argv)
 {
     /* TODO : build compile_result_t and return it */
     int status;
     int std_out[2];
     int std_err[2];
-    int size_argv = count_occurence(argv, ' ') + 3;
-
-    char *argv_splited[size_argv];
 
     pid_t pid;
 
@@ -126,18 +87,13 @@ compile_result_t *compile_without_preprocess(char *input_file,
     }
     else /* Child */
     {
-        setup_gcc_arg(argv_splited, argv, "-fpreprocessed");
-
-        argv_splited[size_argv - 2] = input_file;
-        argv_splited[size_argv - 4] = output_file;
-
         close(std_out[0]);
         close(std_err[0]);
 
         dup2(std_out[1], STDOUT_FILENO);
         dup2(std_err[1], STDERR_FILENO);
 
-        execvp("gcc", argv_splited);
+        execvp("gcc", argv);
     }
 
     result->status = WEXITSTATUS(status);

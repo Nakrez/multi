@@ -23,8 +23,6 @@ typedef struct
 
     char *output_name;
 
-    char *argv;
-
     compile_result_t *result;
 
     e_language langage;

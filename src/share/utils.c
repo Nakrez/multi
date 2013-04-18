@@ -101,4 +101,3 @@ int write_to_fd(int fd, const char *data, size_t n)
 
     return 0;
 }
-

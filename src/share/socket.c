@@ -334,6 +334,19 @@ int recv_argv(int fd, int *argc, char ***argv)
 
     TREAT_ERROR(read(fd, (char *)argc, sizeof (int)) != sizeof (int));
 
+    linear_argv = malloc(*argc);
+
+    TREAT_ERROR(read_fd(fd, *argc, &linear_argv));
+
+    *argc = split_argv(linear_argv, argv);
+
+    (*argv)[0] = "gcc";
+
+    free(linear_argv);
+    return 0;
+
 error:
+    free(linear_argv);
+    printf("Error\n");
     return -1;
 }
