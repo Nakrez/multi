@@ -1,0 +1,7 @@
+- Correct overloaded server problem
+- Add multihost
+- Add configuration file
+- Add specific option of compilers that needs local compilation
+- Correct leaks
+- Add multiarch
+- Add multi compiler
