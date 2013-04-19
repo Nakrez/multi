@@ -1,0 +1,22 @@
+            .___  ___.  __    __   __      .___________. __
+            |   \/   | |  |  |  | |  |     |           ||  |
+            |  \  /  | |  |  |  | |  |     `---|  |----`|  |
+            |  |\/|  | |  |  |  | |  |         |  |     |  |
+            |  |  |  | |  `--'  | |  `----.    |  |     |  |
+            |__|  |__|  \______/  |_______|    |__|     |__|
+
+
+* README
+
+* BUILD
+
+* USE
+
+* CONTACT
+
+* GIT
+
+If you want to have the latest release of MULTI you can clone the official git
+repository by doing the command on your terminal:
+
+git clone git@bitbucket.org:Zerkan/multi.git
