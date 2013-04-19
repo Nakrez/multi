@@ -1,10 +1,12 @@
 #include <master/client.h>
 
+config_t *config;
+
 /* #define IP "88.176.106.132" */
 # define IP "127.0.0.1"
 
 /* FIXME doc */
-static int client_preprocess(config_t *config)
+static int client_preprocess()
 {
     if (preprocess(config->argc, config->argv))
     {
@@ -29,7 +31,7 @@ static int client_preprocess(config_t *config)
 }
 
 /* FIXME doc */
-static int client_retrieve_data(config_t *config)
+static int client_retrieve_data()
 {
     if ((config->result = recv_compile_result(config->socket_fd)) == NULL)
     {
@@ -66,7 +68,7 @@ static void print_compile_result(compile_result_t *result)
 }
 
 /* FIXME doc */
-static int core_client(config_t *config)
+static int core_client()
 {
     int return_value = 0;
 
@@ -87,13 +89,24 @@ static int core_client(config_t *config)
     return return_value;
 }
 
+static void broken_pipe_handler()
+{
+    printf("[multi] Server shut the connection down\n");
+
+    full_compilation(config->argc, config->argv);
+}
+
 int launch_client(int argc, char *argv[])
 {
-    config_t *config;
 
     /* Error on processing arguments */
     if ((config = process_args(argc, argv)) == NULL)
         return 1;
+
+    if (signal(SIGPIPE, broken_pipe_handler) == SIG_ERR)
+    {
+        /* TODO : ERROR HANDLING */
+    }
 
     if (!config->file->input_file || !config->file->output_file)
         full_compilation(config->argc, config->argv);
