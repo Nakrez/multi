@@ -67,15 +67,22 @@ static void *compile_file(void *state)
                      file->input_name,
                      file->output_name);
 
+    /* TODO : put it somewhere else */
+    for (int i = 0; i < thread_state->argc; ++i)
+        printf("%s ", thread_state->argv[i]);
+    printf("\n");
+    /* END TODO */
+
     file->result = compile_without_preprocess(thread_state->argc,
                                               thread_state->argv);
-    printf("LOL\n");
-
     if (!file->result)
         goto exit_thread;
 
-    /* FIXME handle error */
-    send_compile_result(thread_state->cli_fd, file->result);
+    if (send_compile_result(thread_state->cli_fd, file->result) == -1)
+    {
+        printf("[multi deamon] Can not send compile result\n");
+        goto exit_thread;
+    }
 
     if (!file->result->status)
     {

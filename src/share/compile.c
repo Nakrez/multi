@@ -35,6 +35,8 @@ void full_compilation(int argc, char **argv)
 
     add_argv(argc++, &new_argv, NULL);
 
+    printf("[multi] : local compilation\n");
+
     execvp("gcc", new_argv);
 }
 

@@ -347,6 +347,6 @@ int recv_argv(int fd, int *argc, char ***argv)
 
 error:
     free(linear_argv);
-    printf("Error\n");
+    printf("Error in recv_argv()\n");
     return -1;
 }

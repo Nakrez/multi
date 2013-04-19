@@ -14,6 +14,32 @@ void process_file_free(process_file_t **file)
     *file = NULL;
 }
 
+/* static int file_exists(const char *filename) */
+/* { */
+/*     FILE *file = NULL; */
+/*  */
+/*     if ((file = fopen(filename, "r"))) */
+/*     { */
+/*         fclose(file); */
+/*         return 1; */
+/*     } */
+/*  */
+/*     return 0; */
+/* } */
+/*  */
+/* static int touch(const char *filename) */
+/* { */
+/*     FILE *f = fopen(filename, "w"); */
+/*  */
+/*     if (f) */
+/*     { */
+/*         fclose(f); */
+/*         return 1; */
+/*     } */
+/*  */
+/*     return 0; */
+/* } */
+
 process_file_t *process_file_new()
 {
     char *tmp = NULL;
@@ -29,17 +55,21 @@ process_file_t *process_file_new()
         return NULL;
     }
 
+    /* Temporary input name */
     tmp = calloc(strlen (file->input_name) + 3, 1);
 
     sprintf(tmp, "%s.c", file->input_name);
 
     file->input_name = tmp;
 
-    if ((file->output_name = tmpnam(NULL)) == NULL)
-    {
-        process_file_free(&file);
-        return NULL;
-    }
+    /* Temporary output name */
+    tmp = calloc(strlen (file->input_name) + 3, 1);
+
+    sprintf(tmp, "%s.o", file->input_name);
+
+    file->output_name = tmp;
+
+    printf("[multi server] temporary output is : %s\n", file->output_name);
 
     file->result = NULL;
 
