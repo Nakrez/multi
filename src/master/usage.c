@@ -3,7 +3,7 @@
 void usage()
 {
     printf("multi %s (compilation date: %s)\n", MULTI_VERSION, __TIMESTAMP__);
-    printf("  Default port %d \n\n", MULTI_PORT);
+    printf("  Configured port %d \n\n", get_port());
 
     printf("Copyright(C) 2013 by Baptiste COVOLATO\n\n");
 

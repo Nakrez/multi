@@ -9,6 +9,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG}")
 add_library(multi_lib SHARED
             src/share/utils.c
             src/share/compile.c
+            src/share/config.c
             src/share/arg.c
             src/share/socket.c)
 
@@ -30,7 +31,7 @@ add_executable(multi
 
 target_link_libraries(multi multi_lib)
 
-add_executable(multid
+add_executable(multi-server
                src/deamon/config.c
                src/deamon/arg.c
                src/deamon/usage.c
@@ -39,8 +40,8 @@ add_executable(multid
                src/deamon/main.c
                )
 
-target_link_libraries(multid multi_lib)
-target_link_libraries(multid pthread)
+target_link_libraries(multi-server multi_lib)
+target_link_libraries(multi-server pthread)
 
 #######################
 #######################

@@ -39,13 +39,21 @@ multid is the server.
 
 To launch a server just do the following command on a shell
 
-./multid --start
+./multi-server --start
 
 To launch a client you just have to invoke multi as if you were invoking gcc
 binary. The client will take care of the rest.
 
 If something goes wrong between the client and the server, or no server can be
 reached, multi will try to compile locally your file;
+
+If you want to change the default port (8216) of the server or the client
+just export the variable MULTI_PORT before launching the server or the client.
+On bash you just have to do:
+
+export MULTI_PORT=4321
+
+For example to use port 4321
 
 * CONTACT
 

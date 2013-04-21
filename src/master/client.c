@@ -114,7 +114,7 @@ int launch_client(int argc, char *argv[])
     if (!config->file->input_file || !config->file->output_file)
         full_compilation(config->argc, config->argv);
 
-    if ((config->socket_fd = create_client_socket(IP, MULTI_PORT)) < 0)
+    if ((config->socket_fd = create_client_socket(IP, get_port())) < 0)
     {
         ERROR_MSG("Error: Can not create socket\n");
 

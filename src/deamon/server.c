@@ -134,7 +134,7 @@ int server_start()
     }
 
     /* Creating socket */
-    if ((server_config->socket_fd = create_server_socket(MULTI_PORT)) < 0)
+    if ((server_config->socket_fd = create_server_socket(get_port())) < 0)
     {
         ERROR_MSG("Error: Can not create socket\n");
         config_free(&server_config);
