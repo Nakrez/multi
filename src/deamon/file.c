@@ -5,6 +5,7 @@ void process_file_free(process_file_t **file)
     if (!*file)
         return;
 
+    /* Remove temprorary files */
     unlink((*file)->input_name);
     unlink((*file)->output_name);
 
