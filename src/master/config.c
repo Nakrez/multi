@@ -15,6 +15,8 @@ config_t *config_new()
     config->argc = 0;
     config->argv = NULL;
     config->local = 0;
+    config->nb_server = 0;
+    config->servers = NULL;
 
     return config;
 }

@@ -35,7 +35,7 @@ make
 
 The build step would have generated you 2 binaries : multi and multid
 multi is the client.
-multid is the server.
+multi-server is the server.
 
 To launch a server just do the following command on a shell
 
