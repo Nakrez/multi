@@ -22,6 +22,8 @@ typedef struct
 
     int socket_fd;
 
+    int local;
+
     int argc;
 
     char **argv;

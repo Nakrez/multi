@@ -98,10 +98,13 @@ static void broken_pipe_handler()
 
 int launch_client(int argc, char *argv[])
 {
-
     /* Error on processing arguments */
     if ((config = process_args(argc, argv)) == NULL)
         return 1;
+
+    /* Local compilation needed */
+    if (config->local)
+        full_compilation(config->argc, config->argv);
 
     if (signal(SIGPIPE, broken_pipe_handler) == SIG_ERR)
     {

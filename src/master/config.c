@@ -14,6 +14,7 @@ config_t *config_new()
     config->socket_fd = -1;
     config->argc = 0;
     config->argv = NULL;
+    config->local = 0;
 
     return config;
 }

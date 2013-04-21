@@ -106,16 +106,6 @@ static int is_source(char *src)
 
     return src[0] != '-' && !strcmp(src + len - 2, ".c");
 }
-
-static int is_obj(char *src)
-{
-    int len = strlen(src);
-
-    if (len < 3)
-        return 0;
-
-    return src[0] != '-' && !strcmp(src + len - 2, ".o");
-}
 /* END TODO*/
 
 void update_argv_file(int argc, char **argv, char *input_file, char *output_file)
@@ -124,7 +114,7 @@ void update_argv_file(int argc, char **argv, char *input_file, char *output_file
     {
         if (is_source(argv[i]))
             argv[i] = input_file;
-        if (is_obj(argv[i]))
+        if (i > 0 && !strcmp(argv[i - 1], "-o"))
             argv[i] = output_file;
     }
 }

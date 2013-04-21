@@ -15,12 +15,11 @@ int preprocess(int argc, char **argv)
     else
     {
         new_argv = dup_argv(argc, argv);
-        new_argv[0] = "gcc";
 
         add_argv(argc++, &new_argv, "-E");
         add_argv(argc++, &new_argv, NULL);
 
-        execvp("gcc", new_argv);
+        execvp(new_argv[0], new_argv);
     }
 
     return WEXITSTATUS(status);
@@ -31,13 +30,15 @@ void full_compilation(int argc, char **argv)
     char **new_argv = NULL;
 
     new_argv = dup_argv(argc, argv);
-    new_argv[0] = "gcc";
 
     add_argv(argc++, &new_argv, NULL);
 
-    printf("[multi] : local compilation\n");
+    printf("[multi] : local compilation\n[multi] ");
+    for (int i = 0; i < argc; ++i)
+        printf("%s ", argv[i]);
+    printf("\n");
 
-    execvp("gcc", new_argv);
+    execvp(argv[0], new_argv);
 }
 
 static void *close_pipe(int pipe_fd[2])
@@ -90,7 +91,6 @@ compile_result_t *compile_without_preprocess(int argc, char **argv)
     else /* Child */
     {
         char **new_argv = dup_argv(argc, argv);
-        new_argv[0] = "gcc";
 
         add_argv(argc++, &new_argv, "-fpreprocessed");
         add_argv(argc++, &new_argv, NULL);
@@ -101,7 +101,7 @@ compile_result_t *compile_without_preprocess(int argc, char **argv)
         dup2(std_out[1], STDOUT_FILENO);
         dup2(std_err[1], STDERR_FILENO);
 
-        execvp("gcc", new_argv);
+        execvp(argv[0], new_argv);
     }
 
     result->status = WEXITSTATUS(status);

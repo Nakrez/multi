@@ -340,8 +340,6 @@ int recv_argv(int fd, int *argc, char ***argv)
 
     *argc = split_argv(linear_argv, argv);
 
-    (*argv)[0] = "gcc";
-
     free(linear_argv);
     return 0;
 
