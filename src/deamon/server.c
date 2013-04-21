@@ -51,13 +51,15 @@ static void *compile_file(void *state)
 
     process_file_t *file = NULL;
 
+    /* Set a timeout on the socket */
     if (set_timeout(thread_state->cli_fd) < 0)
         goto exit_thread;
 
     file = process_file_new();
 
-    /* TODO Handle errors */
-    recv_argv(thread_state->cli_fd, &thread_state->argc, &thread_state->argv);
+    if (recv_argv(thread_state->cli_fd,
+                  &thread_state->argc, &thread_state->argv) < 0)
+        goto exit_thread;
 
     if (recv_file(thread_state->cli_fd, file->input_name) < 0)
         goto exit_thread;
