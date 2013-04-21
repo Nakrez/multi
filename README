@@ -8,11 +8,49 @@
 
 * README
 
+Multi is a cross compilation software. It will try to compile your C project
+on different computer across the network (only gcc, no cross compilation
+supported for now). Every computer has to run a multi deamon to accept the
+connection from the multi client.
+
+Multi is not a compiler it only preprocess the source code using gcc and
+send it the client that will compile it into an object file and send it back
+to the client. For all compilation purpose multi uses an external compiler
+(gcc for now, more supported soon). Multi is also compatible with automake and
+cmake.
+
 * BUILD
+
+Build multi is very simple. No external library is needed.
+Multi uses CMAKE build system so you will need to have it installed on your
+computer.
+
+To build multi you have to do this :
+
+cmake -DCMAKE_BUILD_TYPE=Release .
+
+make
 
 * USE
 
+The build step would have generated you 2 binaries : multi and multid
+multi is the client.
+multid is the server.
+
+To launch a server just do the following command on a shell
+
+./multid --start
+
+To launch a client you just have to invoke multi as if you were invoking gcc
+binary. The client will take care of the rest.
+
+If something goes wrong between the client and the server, or no server can be
+reached, multi will try to compile locally your file;
+
 * CONTACT
+
+To report any bug you found or to contribute to the project
+email me at b.covolato@gmail.com
 
 * GIT
 
