@@ -5,40 +5,16 @@ void process_file_free(process_file_t **file)
     if (!*file)
         return;
 
-    /* output_name do not need to be free because it contains tmpnam value */
+    unlink((*file)->input_name);
+    unlink((*file)->output_name);
 
     free((*file)->input_name);
+    free((*file)->output_name);
     compile_result_free(&(*file)->result);
 
     free(*file);
     *file = NULL;
 }
-
-/* static int file_exists(const char *filename) */
-/* { */
-/*     FILE *file = NULL; */
-/*  */
-/*     if ((file = fopen(filename, "r"))) */
-/*     { */
-/*         fclose(file); */
-/*         return 1; */
-/*     } */
-/*  */
-/*     return 0; */
-/* } */
-/*  */
-/* static int touch(const char *filename) */
-/* { */
-/*     FILE *f = fopen(filename, "w"); */
-/*  */
-/*     if (f) */
-/*     { */
-/*         fclose(f); */
-/*         return 1; */
-/*     } */
-/*  */
-/*     return 0; */
-/* } */
 
 process_file_t *process_file_new()
 {

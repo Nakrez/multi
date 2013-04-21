@@ -10,11 +10,11 @@
 - Correct leaks
 - Add multiarch
 - Add multi compiler
-- Delete temporary files
 - Add log file (deamon)
 - Add --stop/--restart/--pid options to deamon
 - Add --state option to client (allows client to know the state of servers)
 
 - Correct overloaded server problem : DONE 21/04/2013
-- Add specific option of compilers that needs local compilation : DONE 21/04/13
+- Add specific option of compilers that needs local compilation : DONE 21/04/2013
 - Add possibility to change default port : DONE 21/04/2013
+- Deamon delete temporary files when process is done : DONE 21/04/2013
