@@ -5,12 +5,14 @@ void process_file_free(process_file_t **file)
     if (!*file)
         return;
 
-    /* Remove temprorary files */
+    /*
+     * Remove temprorary files
+     * char * containing temp file free with server configuration
+     */
     unlink((*file)->input_name);
     unlink((*file)->output_name);
 
-    free((*file)->input_name);
-    free((*file)->output_name);
+
     compile_result_free(&(*file)->result);
 
     free(*file);

@@ -40,14 +40,13 @@ thread_state_t *thread_state_new()
 
 void thread_state_free(thread_state_t **state)
 {
-    /* TODO : free argv */
     if ((*state)->cli_fd > -1)
         close((*state)->cli_fd);
 
-    /* TODO : fix bug */
-    /* for (int i = 0; i < (*state)->argc; ++i) */
-    /*     free((*state)->argv[i]); */
+    for (int i = 0; i < (*state)->argc; ++i)
+        free((*state)->argv[i]);
 
+    pthread_detach((*state)->thread);
     free((*state)->argv);
 
     free(*state);

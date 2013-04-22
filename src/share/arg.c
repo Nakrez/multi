@@ -113,8 +113,14 @@ void update_argv_file(int argc, char **argv, char *input_file, char *output_file
     for (int i = 0; i < argc; ++i)
     {
         if (is_source(argv[i]))
+        {
+            free(argv[i]);
             argv[i] = input_file;
+        }
         if (i > 0 && !strcmp(argv[i - 1], "-o"))
+        {
+            free(argv[i]);
             argv[i] = output_file;
+        }
     }
 }
