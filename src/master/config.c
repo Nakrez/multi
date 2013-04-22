@@ -29,6 +29,14 @@ void config_free(config_t **config)
 
         compile_result_free(&(*config)->result);
 
+        if ((*config)->nb_server)
+        {
+            for (int i = 0; i < (*config)->nb_server; ++i)
+                free((*config)->servers[i]);
+
+            free((*config)->servers);
+        }
+
         if ((*config)->socket_fd > -1)
             close((*config)->socket_fd);
 

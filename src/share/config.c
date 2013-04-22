@@ -9,3 +9,13 @@ int get_port()
 
     return DEFAULT_MULTI_PORT;
 }
+
+char *get_hosts()
+{
+    char *hosts = getenv("MULTI_HOSTS");
+
+    if (hosts)
+        return hosts;
+
+    return DEFAULT_MULTI_HOST;
+}

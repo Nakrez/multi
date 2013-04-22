@@ -33,7 +33,8 @@ make
 
 * USE
 
-The build step would have generated you 2 binaries : multi and multid
+The build step would have generated you 2 binaries : multi and multi-server
+
 multi is the client.
 multi-server is the server.
 
@@ -46,6 +47,14 @@ binary. The client will take care of the rest.
 
 If something goes wrong between the client and the server, or no server can be
 reached, multi will try to compile locally your file;
+
+Before using multi you must define all servers multi would try to use. To
+define it you have to define the variable MULTI_HOST that contains all IP of
+your servers separated by spaces. For exemple to set 3 servers at the adresses
+192.168.1.1 192.168.2.2 192.168.3.3 you have to do the
+following command (in bash):
+
+export MULTI_HOST="192.168.1.1 192.168.2.2 192.168.3.3"
 
 If you want to change the default port (8216) of the server or the client
 just export the variable MULTI_PORT before launching the server or the client.

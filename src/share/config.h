@@ -17,6 +17,7 @@
 /* The port Multi use */
 # define DEFAULT_MULTI_PORT 8216
 
+# define DEFAULT_MULTI_HOST "127.0.0.1"
 /*
 The number max of concurent compile unit accepted by a server
 Limit : The number of core online
@@ -31,5 +32,12 @@ Limit : The number of core online
 ** @return The port to use
 */
 int get_port();
+
+/**
+** @brief Get all server the client can connect
+**
+** @return all hosts separated by spaces
+*/
+char *get_hosts();
 
 #endif /* !SHARE_CONFIG_H */

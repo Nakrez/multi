@@ -176,17 +176,11 @@ int create_client_socket(const char *addr, int port)
 
     /* Get information on host */
     if ((server = gethostbyname(addr)) == NULL)
-    {
-        ERROR_MSG("ERROR: host %s can not be reached\n", addr);
         return -1;
-    }
 
     /* Create socket */
     if ((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    {
-        ERROR_MSG("Error: Can not create socket\n");
         return -1;
-    }
 
     bzero((char *)&serv_addr, sizeof(serv_addr));
 
@@ -203,7 +197,6 @@ int create_client_socket(const char *addr, int port)
         (struct sockaddr *)&serv_addr,
         sizeof (serv_addr)) < 0)
     {
-        ERROR_MSG("Error: Can not connect to the host: %s\n", addr);
         close(socket_fd);
         return -1;
     }

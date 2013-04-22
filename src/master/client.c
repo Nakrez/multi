@@ -74,11 +74,11 @@ static int core_client()
 
     /* Preprocess the file and send it to the server */
     if (client_preprocess(config))
-        return 1;
+        return -1;
 
     /* Retrieve object file from server */
     if (client_retrieve_data(config))
-        return 1;
+        return -1;
 
     print_compile_result(config->result);
 
@@ -98,6 +98,8 @@ static void broken_pipe_handler()
 
 int launch_client(int argc, char *argv[])
 {
+    int ret = 0;
+
     /* Error on processing arguments */
     if ((config = process_args(argc, argv)) == NULL)
         return 1;
@@ -114,16 +116,29 @@ int launch_client(int argc, char *argv[])
     if (!config->file->input_file || !config->file->output_file)
         full_compilation(config->argc, config->argv);
 
-    if ((config->socket_fd = create_client_socket(IP, get_port())) < 0)
+    /*
+     * Process the hosts list (use split argv because it uses
+     * the same method)
+     */
+    config->nb_server = split_argv(get_hosts(), &config->servers);
+
+    for (int i = 0; i < config->nb_server; ++i)
     {
-        ERROR_MSG("Error: Can not create socket\n");
+        if ((config->socket_fd = create_client_socket(IP, get_port())) < 0)
+        {
+            ERROR_MSG("[multi] Can not connect to %s\n", config->servers[i]);
+            continue;
+        }
 
-        full_compilation(config->argc, config->argv);
+        /* Process file with server */
+        ret = core_client(config);
 
-        /* Return will be ignored since compiler will remplace multi */
-        return 1;
+        if (ret >= 0)
+            return ret;
     }
 
-    /* Process file with server */
-    return core_client(config);
+    /* If this point is reached then no server found or available */
+    full_compilation(config->argc, config->argv);
+
+    return 0;
 }
