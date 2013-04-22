@@ -96,7 +96,7 @@ int split_argv(char *argv, char ***result)
     return argc;
 }
 
-/* TODO : Clean that crap */
+/* TODO : Same code in master/arg.c clean it */
 static int is_source(char *src)
 {
     int len = strlen(src);
@@ -104,7 +104,10 @@ static int is_source(char *src)
     if (len < 3)
         return 0;
 
-    return src[0] != '-' && !strcmp(src + len - 2, ".c");
+    return src[0] != '-' &&
+           ((len > 2 && !strcmp(src + len - 2, ".c")) ||
+           (len > 3 && !strcmp(src + len - 3, ".cc")) ||
+           (len > 4 && !strcmp(src + len - 4, ".cpp")));
 }
 /* END TODO*/
 

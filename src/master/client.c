@@ -124,7 +124,8 @@ int launch_client(int argc, char *argv[])
 
     for (int i = 0; i < config->nb_server; ++i)
     {
-        if ((config->socket_fd = create_client_socket(IP, get_port())) < 0)
+        if ((config->socket_fd = create_client_socket(config->servers[i],
+                                                      get_port())) < 0)
         {
             ERROR_MSG("[multi] Can not connect to %s\n", config->servers[i]);
             continue;

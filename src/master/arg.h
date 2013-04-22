@@ -11,6 +11,7 @@
 
 # include <share/error.h>
 # include <share/utils.h>
+# include <share/language.h>
 
 # include <master/config.h>
 

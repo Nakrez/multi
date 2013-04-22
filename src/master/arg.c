@@ -1,26 +1,39 @@
 #include <master/arg.h>
 
+static char *internal_cmp = NULL;
+
+/* TODO : optimise it because extract_language does the same */
 static int is_source(char *src)
 {
     int len = strlen(src);
 
-    if (len < 3)
+    if (len < 1)
         return 0;
 
-    return src[0] != '-' && !strcmp(src + len - 2, ".c");
+    return src[0] != '-' &&
+           ((len > 2 && !strcmp(src + len - 2, ".c")) ||
+           (len > 3 && !strcmp(src + len - 3, ".cc")) ||
+           (len > 4 && !strcmp(src + len - 4, ".cpp")));
 }
 
-static char *requested_compiler()
+static char *requested_compiler(e_language lang)
 {
     char *compile = getenv("MULTI_COMPILER");
 
-    if (compile)
+    /* If compiler set with --compiler option */
+    if (internal_cmp)
+        return internal_cmp;
+    /* If compiler set by environnement */
+    else if (compile)
         return compile;
+    /* Auto detect compiler */
+    else if (lang != UNKNOWN)
+        return get_compiler(lang);
 
     return "gcc";
 }
 /*
- * TODO : handle -h|--help
+ * TODO : handle --help
  */
 config_t *process_args(int argc, char *argv[])
 {
@@ -32,6 +45,13 @@ config_t *process_args(int argc, char *argv[])
     {
         ERROR_MSG("Internal error: Can not allocate configuration\n");
         return NULL;
+    }
+
+    if (argc > 3 && !strcmp(argv[1], "--compiler"))
+    {
+        internal_cmp = argv[2];
+        argv += 2;
+        argc -= 2;
     }
 
     for (int i = 1; i < argc; ++i)
@@ -49,7 +69,10 @@ config_t *process_args(int argc, char *argv[])
     if (!c_opt_detected)
         config->local = 1;
 
-    argv[0] = requested_compiler();
+    if (config->file->input_file)
+        config->file->language = extract_language(config->file->input_file);
+
+    argv[0] = requested_compiler(config->file->language);
 
     /*
      * Store arg (easier since config is already passed as argument

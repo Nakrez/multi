@@ -64,6 +64,18 @@ export MULTI_PORT=4321
 
 For example to use port 4321
 
+If you want to specified a specific compiler you can do it by invoking multi
+with --compiler option or by setting MULTI_COMPILER environnement variable.
+
+So for example to set g++ as compiler you can do
+
+./multi --compiler g++ -c test.cc -o test.o
+
+or
+
+export MULTI_COMPILER='g++'
+./multi -c test.cc -o test.o
+
 * CONTACT
 
 To report any bug you found or to contribute to the project

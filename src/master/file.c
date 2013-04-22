@@ -9,6 +9,7 @@ multi_file_t *multi_file_new()
 
     file->input_file = NULL;
     file->output_file = NULL;
+    file->language = UNKNOWN;
 
     return file;
 }
