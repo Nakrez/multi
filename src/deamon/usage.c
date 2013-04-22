@@ -5,7 +5,9 @@ void usage()
     printf("multi-server %s (compilation date: %s)\n",
             MULTI_VERSION,
             __TIMESTAMP__);
-    printf("  Configured port %d \n\n", get_port());
+    printf("  Configured port: %d \n", get_port());
+    printf("  Maxium compilation unit at the same time: %ld\n\n",
+           THREAD_COMPILE_MAX);
 
     printf("Copyright(C) 2013 by Baptiste COVOLATO\n\n");
 
