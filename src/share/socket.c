@@ -98,7 +98,7 @@ int recv_file(int socket_fd, const char *output_name)
     do
     {
         /* Read data from socket */
-        if ((read_bytes = read(socket_fd, buffer, 1024)) < 0)
+        if ((read_bytes = read(socket_fd, buffer, 1024)) <= 0)
         {
             fclose(file);
             return -3;
@@ -206,8 +206,8 @@ int create_client_socket(const char *addr, int port)
 
 int send_compile_result(int fd, compile_result_t *result)
 {
-    const int stdout_size = neg_strlen(result->std_out) + 1;
-    const int stderr_size = neg_strlen(result->std_err) + 1;
+    int stdout_size = neg_strlen(result->std_out) + 1;
+    int stderr_size = neg_strlen(result->std_err) + 1;
 
     if ((write_to_fd(fd, (char *)&result->status, sizeof (int))) == -1)
         return -1;
@@ -263,7 +263,7 @@ compile_result_t *recv_compile_result(int fd)
         }
 
         /* Check fd error */
-        TREAT_ERROR(n < 0);
+        TREAT_ERROR(n <= 0);
 
         n = 0;
         pos = 0;
@@ -285,7 +285,7 @@ compile_result_t *recv_compile_result(int fd)
         }
 
         /* Check fd error */
-        TREAT_ERROR(n < 0);
+        TREAT_ERROR(n <= 0);
     }
 
     return result;

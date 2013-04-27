@@ -11,20 +11,23 @@ static int client_preprocess()
     if (preprocess(config->argc, config->argv))
     {
         config_free(&config);
-        return 1;
+        return -1;
     }
 
-    /* TODO : Handle errors */
-    send_argv(config->socket_fd, config->argc, config->argv);
+    if (send_argv(config->socket_fd, config->argc, config->argv) < 0)
+    {
+        ERROR_MSG("Error: Can not send argv to the server\n");
+        close(config->socket_fd);
+
+        return -1;
+    }
 
     if (send_file(config->socket_fd, config->file->output_file) < 0)
     {
         ERROR_MSG("Error: Can not send file to the server\n");
         close(config->socket_fd);
 
-        full_compilation(config->argc, config->argv);
-
-        /* Never reached */
+        return -1;
     }
 
     return 0;
@@ -38,7 +41,7 @@ static int client_retrieve_data()
         ERROR_MSG("Error: Can not receive compiler state from the server\n");
         close(config->socket_fd);
 
-        full_compilation(config->argc, config->argv);
+        return -1;
     }
 
     if (!config->result->status)
@@ -48,9 +51,7 @@ static int client_retrieve_data()
             ERROR_MSG("Error: Can not receive compiled file from the server\n");
             close(config->socket_fd);
 
-            full_compilation(config->argc, config->argv);
-
-            /* Never reached */
+            return -1;
         }
     }
 
@@ -108,7 +109,7 @@ int launch_client(int argc, char *argv[])
     if (config->local)
         full_compilation(config->argc, config->argv);
 
-    if (signal(SIGPIPE, broken_pipe_handler) == SIG_ERR)
+    if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
     {
         /* TODO : ERROR HANDLING */
     }

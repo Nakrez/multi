@@ -28,8 +28,15 @@ unsigned zero_strlen(char *str)
 
 int neg_strlen(const char *str)
 {
+    int len = -1;
+
     if (str)
-        return strlen(str);
+        len = strlen(str);
+    else
+        return -1;
+
+    if (len)
+        return len;
     else
         return -1;
 }
@@ -44,7 +51,7 @@ int read_fd(int fd, int size, char **buf)
         pos += read_byte;
     }
 
-    if (read_byte < 0)
+    if (pos != size || read_byte < 0)
         return -1;
 
     buf[pos] = 0;
@@ -84,15 +91,18 @@ char *read_all_fd(int fd)
 int write_to_fd(int fd, const char *data, size_t n)
 {
     /* The amount of byte left to write */
-    size_t left_byte = n;
+    int left_byte = n;
     /* The amount of byte written */
-    size_t written_byte;
+    int written_byte;
 
     while (left_byte > 0)
     {
         /* Try to write left byte */
         if ((written_byte = write(fd, data, left_byte)) <= 0)
             return -1;
+
+        if (written_byte <= 0)
+            break;
 
         /* Update values */
         left_byte -= written_byte;

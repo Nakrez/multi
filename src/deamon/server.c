@@ -159,6 +159,7 @@ int server_start()
 
         if (check_overload() < 0)
         {
+            ERROR_MSG("ERROR close\n");
             close(cli_fd);
             continue;
         }
