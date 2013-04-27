@@ -89,7 +89,10 @@ static void *compile_file(void *state)
     if (!file->result->status)
     {
         if (send_file(thread_state->cli_fd, file->output_name) < 0)
+        {
+            printf("[multi deamon] Can not send compiled file\n");
             goto exit_thread;
+        }
     }
 
 exit_thread:

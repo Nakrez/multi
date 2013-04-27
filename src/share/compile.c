@@ -125,9 +125,12 @@ compile_result_t *compile_result_new()
 
 void compile_result_free(compile_result_t **res)
 {
-    free((*res)->std_out);
-    free((*res)->std_err);
-    free(*res);
+    if (*res)
+    {
+        free((*res)->std_out);
+        free((*res)->std_err);
+        free(*res);
 
-    *res = NULL;
+        *res = NULL;
+    }
 }
