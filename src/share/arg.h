@@ -5,14 +5,23 @@
 ** @author Baptiste COVOLATO <b.covolato@gmail.com>
 */
 #ifndef SHARE_ARG_H
-# define SHAREARG_H
+# define SHARE_ARG_H
 
 # include <stdlib.h>
 # include <string.h>
 
 # include <share/utils.h>
 
-/* FIXME doc */
+/**
+** @brief   Duplicate existing argument array
+            Be carreful no deep copy of each arguments is performed
+            The destruction of the allocated array is let to the user
+**
+** @param   argc    The number of arguments
+** @param   argv    The array containing the arguments to copy
+**
+** @return  The duplicate argument array, NULL if it fails
+*/
 char **dup_argv(int argc, char **argv);
 
 /* FIXME doc */
@@ -25,6 +34,7 @@ int concate_argv(int argc, char **argv, char **result);
 int split_argv(char *argv, char ***result);
 
 /* FIXME doc */
-void update_argv_file(int argc, char **argv, char *input_file, char *output_file);
+void update_argv_file(int argc, char **argv, char *input_file,
+                      char *output_file);
 
-#endif /* !ARG_H */
+#endif /* !SHARE_ARG_H */
