@@ -44,6 +44,21 @@ add_executable(multi-server
 target_link_libraries(multi-server multi_lib)
 target_link_libraries(multi-server pthread)
 
+# DOC
+
+option(BUILD_DOCUMENTATION "Use Doxygen to create the HTML based API documentation" ON)
+
+FIND_PACKAGE(Doxygen)
+if (DOXYGEN_FOUND)
+    #-- Configure the Template Doxyfile for our specific project
+    configure_file(cmake/Doxyfile.in
+                   ${PROJECT_BINARY_DIR}/Doxyfile  @ONLY IMMEDIATE)
+    add_custom_target(docs ALL
+                      COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_BINARY_DIR}/Doxyfile
+                      SOURCES ${PROJECT_BINARY_DIR}/Doxyfile)
+                      # IF you do NOT want the documentation to be generated EVERY time you build the project
+                      # then leave out the 'ALL' keyword from the above command.
+endif()
 #######################
 #######################
 ##   DISTCLEAN RULE  ##
